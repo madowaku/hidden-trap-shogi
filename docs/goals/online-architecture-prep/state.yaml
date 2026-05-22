@@ -1,0 +1,185 @@
+version: 2
+
+goal:
+  title: "Online Architecture Prep"
+  slug: online-architecture-prep
+  kind: specific
+  tranche: "Create and verify a player-specific GameView boundary before adding any networking."
+  status: done
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium
+    objective: "Map the current GameState, visible pitfall helper, Bot hidden-information fix, and tests to define the safest GameView slice."
+    inputs:
+      - "src/game/types.ts"
+      - "src/game/pitfall.ts"
+      - "src/game/reducer.ts"
+      - "src/game/bot.ts"
+      - "src/hooks/useGame.ts"
+      - "tests/static/*.mjs"
+      - "README.md"
+    constraints:
+      - "Read-only."
+      - "Do not add networking."
+      - "Prefer a type/test boundary over UI work."
+    expected_output:
+      - "Current hidden-information surfaces."
+      - "Recommended GameView shape."
+      - "Exact first Worker task."
+      - "Verification commands."
+    receipt:
+      result: done
+      summary: "GameState currently stores raw `pitfalls` and `pendingPitfall`, while `getVisiblePitfalls` already expresses the player visibility rule. Casual mode only controls whether the previous active opponent trap is copied into `LogEntry.revealedPitfall`; it does not toggle strict shogi rule enforcement. The safest first slice is to add a `GameView`/`getPlayerView` boundary based on visible pitfalls and public logs, plus clarify the Casual UI copy as missed-trap reveal mode."
+      evidence:
+        - "src/game/types.ts: GameState includes raw pitfalls and pendingPitfall."
+        - "src/game/pitfall.ts: getVisiblePitfalls returns own active/pending traps for players and all traps for spectator."
+        - "src/game/reducer.ts: casualMode controls revealedPitfall in log entries."
+        - "src/app/page.tsx: current copy says Casual simplifies strict check rules, which does not match reducer behavior."
+        - "node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.md"
+        - "node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md"
+      recommended_game_view:
+        - "Expose board, currentPlayer, turn, phase, hands, public log, config, winner, viewer, and visiblePitfalls."
+        - "Do not expose raw pitfalls or pendingPitfall."
+        - "Use getVisiblePitfalls(state, viewer) as the first visibility policy."
+      first_worker_task: "Add GameView/getPlayerView tests and implementation, then update start/header Casual copy so ON means missed traps are revealed and OFF means they stay hidden."
+      verify:
+        - "npm run test:static"
+        - "npm run lint"
+        - "npm run build"
+  - id: T002
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Choose the first safe implementation task for player-specific GameView."
+    inputs:
+      - "T001 receipt"
+    constraints:
+      - "Do not implement."
+      - "Do not choose WebSocket or hosting work."
+      - "Reject any task that sends opponent unpublished traps to the client."
+    expected_output:
+      - "Decision."
+      - "Exact Worker objective."
+      - "allowed_files."
+      - "verify."
+      - "stop_if."
+    receipt:
+      result: done
+      decision: "Proceed with the local hidden-information boundary plus Casual clarity. This satisfies the online prep tranche and the user's new UX request without adding networking."
+      next_allowed_task: T003
+      worker_objective: "Implement `getPlayerView(state, viewer)` without raw hidden traps, add tests proving opponent unpublished traps are absent, and clarify Casual ON/OFF as missed-trap reveal mode in the first-run UI/header copy."
+      allowed_files:
+        - "src/game/types.ts"
+        - "src/game/view.ts"
+        - "src/app/page.tsx"
+        - "tests/static/*.mjs"
+        - "docs/goals/online-architecture-prep/state.yaml"
+      verify:
+        - "npm run test:static"
+        - "npm run lint"
+        - "npm run build"
+      stop_if:
+        - "Need WebSocket, hosting, credentials, or external services."
+        - "Need files outside allowed_files."
+        - "Cannot prove hidden-trap exclusion with tests."
+        - "Casual copy requires a broader rules/product decision."
+  - id: T003
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: default
+    objective: "Implement `getPlayerView(state, viewer)` without raw hidden traps, add tests proving opponent unpublished traps are absent, and clarify Casual ON/OFF as missed-trap reveal mode in the first-run UI/header copy."
+    allowed_files:
+      - "src/game/types.ts"
+      - "src/game/view.ts"
+      - "src/app/page.tsx"
+      - "tests/static/*.mjs"
+      - "docs/goals/online-architecture-prep/state.yaml"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Need WebSocket, hosting, credentials, or external services."
+      - "Cannot prove hidden-trap exclusion with tests."
+      - "Casual copy requires a broader rules/product decision."
+      - "Verification fails twice."
+    receipt:
+      result: done
+      changed_files:
+        - "src/game/types.ts"
+        - "src/game/view.ts"
+        - "src/app/page.tsx"
+        - "tests/static/game-view-hidden-information.mjs"
+        - "tests/static/useGame-bot-timeouts.mjs"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Added `GameView` and `getPlayerView(state, viewer)` so future online payloads can omit raw `pitfalls` and `pendingPitfall` while exposing only `visiblePitfalls`. Added tests for player and spectator visibility. Updated first-run and header Casual copy so ON means missed traps are revealed for practice and OFF means missed traps stay hidden for stronger yomi."
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit whether the local GameView boundary is ready for future online multiplayer."
+    inputs:
+      - "All done task receipts."
+      - "Last verification."
+      - "Current dirty diff."
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work is still queued or active."
+    expected_output:
+      - "complete | not_complete."
+      - "missing evidence."
+      - "next task if not complete."
+    receipt:
+      result: done
+      decision: complete
+      summary: "The tranche is complete. A local player-specific GameView boundary now exists and is covered by tests proving opponent unpublished traps are not included in player views. Casual ON/OFF is clearer on first encounter and now matches actual reducer behavior: reveal missed traps for practice or keep missed traps hidden for stronger reading. Networking remains intentionally deferred."
+      completion_evidence:
+        - "src/game/view.ts exports getPlayerView."
+        - "tests/static/game-view-hidden-information.mjs proves player views omit raw pitfalls and pendingPitfall."
+        - "tests/static/useGame-bot-timeouts.mjs checks Casual missed-trap reveal copy."
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+      remaining_work:
+        - "Use GameView as the server-to-client payload when building the WebSocket room server."
+        - "Decide whether spectator mode should exist online, because local spectator views can see all traps."
+
+checks:
+  dirty_fingerprint: "repo already dirty before this goal board; see git status"
+  last_verification:
+    result: pass
+    task: T003
+    commands:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"

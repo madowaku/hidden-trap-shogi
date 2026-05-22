@@ -1,0 +1,22 @@
+Agent Sprite Forge asset plan for the eventual Kuno-Usa sprite:
+
+asset_type: npc
+action: single
+view: 3/4
+sheet: single_asset
+bundle: single_asset
+anchor: bottom
+margin: safe
+art_style: pixel_inspired
+reference: none
+layout_guide: none
+name: kuno-wana
+
+Prompt for image2 / built-in image generation:
+
+Single compact mascot sprite for a browser board game helper character.
+Subject: Kuno-Usa, a mischievous cute ninja guide for hidden-trap shogi, small body, black hood, cream face opening, sharp playful eyes, tiny red scarf, small golden trap-ring charm.
+Style: clean modern pixel-art-inspired 2D game mascot, crisp silhouette, readable at 42-72 px, not a splash illustration, no text, no labels, no UI, no speech bubbles.
+Pose: 3/4 view from slightly above, full body visible, playful "I saw that move" expression, hands tucked close to avoid wide silhouette.
+Containment: entire subject fits fully inside the canvas, clear margin on all sides, no body part or scarf crossing the edge.
+Background: solid flat #FF00FF magenta chroma key only, no gradients, no shadows, no texture.

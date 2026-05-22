@@ -1,0 +1,378 @@
+version: 2
+goal:
+  slug: playable-pitfall-shogi
+  status: done
+  updated: 2026-05-16
+active_task: null
+tasks:
+  - id: T001
+    type: scout
+    assignee: PM
+    status: done
+    objective: "Recover the interrupted plan from the current repository state."
+    inputs:
+      - "git status --short"
+      - "src/game/*"
+      - "src/components/*"
+      - "src/app/page.tsx"
+      - "Next.js app docs"
+    constraints:
+      - "Read Next.js docs before app edits."
+    expected_output:
+      - "Safe first implementation slice"
+    receipt:
+      result: done
+      summary: "Existing game logic, hook, and board components are present; `src/app/page.tsx` is still the starter page. First safe slice is wiring the page and verifying compile/lint."
+      evidence:
+        - "src/app/page.tsx"
+        - "src/hooks/useGame.ts"
+        - "src/components/Board.tsx"
+        - "node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.md"
+        - "node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md"
+  - id: T002
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Wire existing Pitfall Shogi components into the Next.js app page and fix verification issues within the first playable slice."
+    allowed_files:
+      - "src/app/page.tsx"
+      - "src/app/layout.tsx"
+      - "src/app/globals.css"
+      - "src/components/*"
+      - "src/hooks/*"
+      - "src/game/*"
+    verify:
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Game rules are ambiguous beyond existing implementation."
+      - "Verification fails twice for the same unknown reason."
+    receipt:
+      result: done
+      changed_files:
+        - "src/app/page.tsx"
+        - "src/app/layout.tsx"
+        - "src/components/Cell.tsx"
+        - "src/components/Piece.tsx"
+        - "src/components/PieceStand.tsx"
+        - "src/game/board.ts"
+        - "src/game/bot.ts"
+        - "src/game/reducer.ts"
+        - "src/hooks/useGame.ts"
+      commands:
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Replaced the starter route with a playable Pitfall Shogi UI, wired board clicks, drops, promotion, pass-device, settings, reset, logs, and fixed lint/build issues."
+  - id: T999
+    type: judge
+    assignee: PM
+    status: done
+    objective: "Audit whether the current tranche is complete."
+    inputs:
+      - "T001-T002 receipts"
+      - "fresh verification results"
+      - "current diff"
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "Current tranche is complete: the app route renders the playable board UI, settings and turn controls are wired, lint/build pass, and Playwright loaded the page at http://localhost:8094 with the expected title and game phase."
+      evidence:
+        - "npm run lint: pass"
+        - "npm run build: pass"
+        - "Playwright page title: 落とし穴将棋"
+        - "Playwright snapshot includes board, controls, and '駒を動かしてください' after pitfall placement."
+  - id: T003
+    type: scout
+    assignee: PM
+    status: done
+    objective: "Find the next small recovery slice after the completed playable-page tranche."
+    inputs:
+      - "docs/goals/playable-pitfall-shogi/goal.md"
+      - "src/hooks/useGame.ts"
+      - "src/game/bot.ts"
+      - "npm run lint"
+      - "npm run build"
+    constraints:
+      - "Keep the slice small and verifiable."
+      - "Do not change game rules beyond existing implementation."
+    expected_output:
+      - "A safe follow-up Worker task"
+    receipt:
+      result: done
+      summary: "Fresh lint/build pass. Found a focused stability issue: PvBot schedules delayed actions without returning cleanup from the effect branch, so reset/mode changes can leave stale bot actions queued."
+      evidence:
+        - "src/hooks/useGame.ts"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+  - id: T004
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Ensure PvBot delayed actions are cancelled when the effect is invalidated by reset, mode change, or phase change."
+    allowed_files:
+      - "src/hooks/useGame.ts"
+      - "package.json"
+      - "tests/*"
+      - "docs/goals/playable-pitfall-shogi/state.yaml"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "The fix requires changing game rules or UI behavior."
+      - "Verification fails twice for the same unknown reason."
+    receipt:
+      result: done
+      changed_files:
+        - "src/hooks/useGame.ts"
+        - "package.json"
+        - "tests/static/useGame-bot-timeouts.mjs"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Added a static regression check for bot timeout cleanup and updated the PvBot effect to clear pending delayed actions on reset, phase invalidation, and mode changes."
+  - id: T005
+    type: judge
+    assignee: PM
+    status: done
+    objective: "Audit whether the follow-up PvBot stability slice is complete."
+    inputs:
+      - "T003-T004 receipts"
+      - "fresh verification results"
+      - "current diff"
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "Follow-up slice is complete: the stale PvBot timeout path has a failing-then-passing regression check, the hook now returns cleanup from both delayed bot branches, and lint/build remain green."
+      evidence:
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+  - id: T006
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Implement the requested Bot levels, trap review, PvP pass screen polish, log feedback, and reducer safety guards as one verified UI/gameplay tranche."
+    allowed_files:
+      - "docs/goals/playable-pitfall-shogi/goal.md"
+      - "docs/goals/playable-pitfall-shogi/state.yaml"
+      - "package.json"
+      - "tests/static/useGame-bot-timeouts.mjs"
+      - "src/app/layout.tsx"
+      - "src/app/page.tsx"
+      - "src/app/globals.css"
+      - "src/components/*"
+      - "src/game/*"
+      - "src/hooks/useGame.ts"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Need product decisions beyond Easy/Normal/Hard behavior labels."
+      - "Verification fails twice for the same unknown reason."
+    receipt:
+      result: done
+      changed_files:
+        - "docs/goals/playable-pitfall-shogi/goal.md"
+        - "docs/goals/playable-pitfall-shogi/state.yaml"
+        - "tests/static/useGame-bot-timeouts.mjs"
+        - "src/app/page.tsx"
+        - "src/app/globals.css"
+        - "src/components/GameLog.tsx"
+        - "src/game/types.ts"
+        - "src/game/constants.ts"
+        - "src/game/bot.ts"
+        - "src/game/reducer.ts"
+        - "src/hooks/useGame.ts"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Added PvBot Easy/Normal/Hard levels, post-game trap history review, stronger PvP pass-device copy, animated latest/trap log entries, and reducer guards for stale moves/drops and hand counts."
+  - id: T007
+    type: judge
+    assignee: PM
+    status: done
+    objective: "Audit whether the requested five-item tranche is complete."
+    inputs:
+      - "T006 receipt"
+      - "fresh verification results"
+      - "current diff"
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "The requested five-item tranche is complete for a verified local slice: Bot levels are selectable in PvBot, trap review renders after game over, pass-device privacy messaging is clearer, log/trap hit feedback is stronger, and reducer guardrails cover invalid move/drop actions."
+      evidence:
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+        - "Playwright snapshot shows PvBot Easy / Normal / Hard controls."
+  - id: T008
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Improve play feel and verifiability without adding new rules: tutorial, clearer trap review stats, bot copy, trap-fail explanation, and manual test checklist."
+    allowed_files:
+      - "docs/goals/playable-pitfall-shogi/state.yaml"
+      - "README.md"
+      - "tests/static/useGame-bot-timeouts.mjs"
+      - "src/app/page.tsx"
+      - "src/components/GameLog.tsx"
+      - "src/game/types.ts"
+      - "src/game/reducer.ts"
+      - "src/app/globals.css"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Requested behavior requires adding a new rule."
+      - "Verification fails twice for the same unknown reason."
+    receipt:
+      result: done
+      changed_files:
+        - "docs/goals/playable-pitfall-shogi/state.yaml"
+        - "README.md"
+        - "tests/static/useGame-bot-timeouts.mjs"
+        - "src/app/page.tsx"
+        - "src/components/GameLog.tsx"
+        - "src/game/types.ts"
+        - "src/game/reducer.ts"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Added a three-step mini tutorial with Help access, trap review hit-rate/count stats, clearer Bot level copy and selected state, trap-fail logs that name the invalidated move/drop, and a README manual test checklist."
+  - id: T009
+    type: judge
+    assignee: PM
+    status: done
+    objective: "Audit whether the play-feel and verifiability tranche is complete."
+    inputs:
+      - "T008 receipt"
+      - "fresh verification results"
+      - "current diff"
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "The play-feel and verifiability tranche is complete without adding new rules: first-time rules are explained, trap review is easier to scan, Bot copy is clearer, trap failures identify the failed action, and manual verification steps are documented."
+      evidence:
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+        - "Playwright snapshot shows the mini tutorial."
+        - "Playwright snapshot shows Bot Normal selected and Hard '罠と反撃を読む'."
+  - id: T010
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Prepare the current web build for itch.io testers with bilingual onboarding, publish metadata, static export, and public-page assets."
+    allowed_files:
+      - "docs/goals/playable-pitfall-shogi/state.yaml"
+      - "docs/itch/*"
+      - "docs/itch/screenshots/*"
+      - "README.md"
+      - "package.json"
+      - "next.config.ts"
+      - "tests/static/useGame-bot-timeouts.mjs"
+      - "src/app/page.tsx"
+      - "src/app/globals.css"
+      - "src/components/GameInfo.tsx"
+      - "src/components/GameLog.tsx"
+      - "src/components/PieceStand.tsx"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+      - "npm run export"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Need a final public feedback URL from the project owner."
+      - "Verification fails twice for the same unknown reason."
+    receipt:
+      result: done
+      changed_files:
+        - "docs/goals/playable-pitfall-shogi/state.yaml"
+        - "docs/itch/screenshots/title.png"
+        - "docs/itch/screenshots/gameplay.png"
+        - "docs/itch/screenshots/rules.png"
+        - "README.md"
+        - "package.json"
+        - "next.config.ts"
+        - "tests/static/useGame-bot-timeouts.mjs"
+        - "src/app/layout.tsx"
+        - "src/app/globals.css"
+        - "src/app/page.tsx"
+        - "src/components/GameInfo.tsx"
+        - "src/components/GameLog.tsx"
+        - "src/components/PieceStand.tsx"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+        - cmd: "npm run export"
+          status: pass
+        - cmd: "Playwright 960x720 screenshots"
+          status: pass
+      summary: "Added bilingual tester-facing title/mode onboarding, Help/Rules localization, mobile warning, Known Issues, Feedback and version surfaces, static export scripts/config without network font dependency, itch.io README materials, and three screenshots."
+  - id: T011
+    type: judge
+    assignee: PM
+    status: done
+    objective: "Audit whether the itch.io publication-prep tranche is complete."
+    inputs:
+      - "T010 receipt"
+      - "fresh verification results"
+      - "current diff"
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "The itch.io publication-prep tranche is complete: external testers now see a title/mode screen, Japanese/English rule help, version/feedback/known-issues/mobile guidance, static export is green, README has upload and page-copy materials, and three 960x720 screenshots are available."
+      evidence:
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+        - "npm run export: pass"
+        - "docs/itch/screenshots/title.png"
+        - "docs/itch/screenshots/gameplay.png"
+        - "docs/itch/screenshots/rules.png"

@@ -1,0 +1,143 @@
+version: 2
+
+goal:
+  title: "Onboarding And Header Cleanup Tranche"
+  slug: "onboarding-header-tranche"
+  kind: specific
+  tranche: "Implement first-turn tutorial, in-match header cleanup, expectation copy, Online disabled reason, and Hard bot copy adjustment with full requested verification."
+  status: done
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: default
+    objective: "Map existing onboarding, header controls, Online disabled copy, Bot copy, docs copy, and verification commands."
+    inputs:
+      - "src/app/page.tsx"
+      - "src/components/NinjaGuide.tsx"
+      - "README.md"
+      - "tests/static/*.mjs"
+      - "package.json"
+      - "node_modules/next/dist/docs/"
+    constraints:
+      - "Read-only."
+      - "Do not edit implementation files."
+      - "Prefer concrete file-path evidence."
+    expected_output:
+      - "Relevant files and current behavior"
+      - "Verification commands"
+      - "Safe Worker scope"
+    receipt:
+      result: done
+      summary: "Mapped current onboarding/header/docs surfaces. page.tsx owns title screen, in-match header, tutorial modal, online disabled UI, and Bot copy. NinjaGuide owns guide variants. README has itch page copy and strict-rule expectation text. Static tests already inspect these surfaces. Next.js docs checked: `use client` supports state/event handlers and browser APIs must be accessed in effects."
+      evidence:
+        - "src/app/page.tsx"
+        - "src/components/NinjaGuide.tsx"
+        - "README.md"
+        - "tests/static/useGame-bot-timeouts.mjs"
+        - "tests/static/online-client-connect.mjs"
+        - "node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md"
+        - "node_modules/next/dist/docs/01-app/02-guides/static-exports.md"
+      next_task: T002
+  - id: T002
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: default
+    objective: "Implement the requested onboarding/header/copy tranche and add regression tests."
+    allowed_files:
+      - "src/app/page.tsx"
+      - "src/components/NinjaGuide.tsx"
+      - "README.md"
+      - "tests/static/useGame-bot-timeouts.mjs"
+      - "tests/static/online-client-connect.mjs"
+      - "tests/static/mode-entry-ux.mjs"
+    verify:
+      - "npm run test:static"
+      - "npx tsc --noEmit"
+      - "npm run lint"
+      - "npm run build"
+      - "npm run itch:zip"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Next.js docs conflict with the intended implementation."
+      - "Verification fails twice for reasons unrelated to this tranche."
+    receipt:
+      result: done
+      changed_files:
+        - "src/app/page.tsx"
+        - "README.md"
+        - "tests/static/useGame-bot-timeouts.mjs"
+        - "tests/static/online-client-connect.mjs"
+        - "tests/static/mode-entry-ux.mjs"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npx tsc --noEmit"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+        - cmd: "npm run itch:zip"
+          status: pass
+      summary: "Implemented first-turn tutorial copy with localStorage persistence and Skip/Help reopen, folded in-match nonessential controls into Settings, added Online disabled reason copy, changed Hard copy to trap-aware wording, and added casual-variant expectation copy to README."
+  - id: T999
+    type: pm
+    assignee: PM
+    status: done
+    reasoning_hint: default
+    objective: "Audit whether the implemented tranche satisfies the user's requested outcomes."
+    inputs:
+      - "T001 receipt"
+      - "T002 receipt"
+      - "Current diff"
+      - "Last verification"
+    constraints:
+      - "Reject completion if required Worker work is still queued or active."
+    expected_output:
+      - "complete | not_complete"
+      - "Missing evidence"
+      - "Next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "Current tranche satisfies the requested implementation and command verification: first-turn tutorial, skippable/persisted Help access, cleaner in-match header, Settings foldout preserving mode/settings controls, Online disabled reason, Hard copy adjustment, and README expectation copy are covered by static tests and full build/package verification."
+      evidence:
+        - "T001 receipt"
+        - "T002 receipt"
+        - "npm run test:static: pass"
+        - "npx tsc --noEmit: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+        - "npm run itch:zip: pass"
+
+checks:
+  dirty_fingerprint: unknown
+  last_verification:
+    result: pass
+    task: T002
+    commands:
+      - "npm run test:static"
+      - "npx tsc --noEmit"
+      - "npm run lint"
+      - "npm run build"
+      - "npm run itch:zip"

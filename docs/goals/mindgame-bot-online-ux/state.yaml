@@ -1,0 +1,224 @@
+version: 2
+
+goal:
+  title: "Mindgame Bot And Online UX"
+  slug: mindgame-bot-online-ux
+  kind: open_ended
+  tranche: "Discover the highest-leverage way to make PvBot feel like a hidden-information mind game, clarify online multiplayer architecture, implement the first approved safe slice if available, and audit the result."
+  status: done
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  design_approval_required_for_gameplay_or_visual_changes: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium
+    objective: "Map current PvBot, trap-information flow, UI surfaces, verification commands, and online-readiness risks."
+    inputs:
+      - "README.md"
+      - "package.json"
+      - "src/game/bot.ts"
+      - "src/game/reducer.ts"
+      - "src/game/board.ts"
+      - "src/hooks/useGame.ts"
+      - "src/app/page.tsx"
+      - "tests/static/*.mjs"
+      - "https://github.com/yaneurao/YaneuraOu/"
+      - "https://zenn.dev/takashi1728/articles/8b0382431b0a72"
+    constraints:
+      - "Read-only."
+      - "Do not edit implementation files."
+      - "Prefer concrete file-path evidence over generic advice."
+      - "Account for hidden information: the Bot should not perfectly avoid a secret player trap."
+    expected_output:
+      - "Repo map focused on Bot and UX."
+      - "How the references apply to this game."
+      - "Ranked PvBot mind-game improvements."
+      - "Online multiplayer architecture options and risks."
+      - "Candidate next tasks."
+    receipt:
+      result: done
+      summary: "Mapped the PvBot hidden-information path. The current Bot receives full GameState from useGame and scoreAction directly reads state.pitfalls[opponent], then applies a large avoidance penalty to the exact active hidden trap square. That is the concrete cheating-feel source. The smallest high-impact slice is to remove that direct active-opponent-pitfall read and replace it with a public-information trap-risk heuristic, backed by a regression test where two states differing only by the hidden trap produce the same Bot move."
+      evidence:
+        - "src/hooks/useGame.ts: simpleBot.decideMove(state, botPlayer, state.config.botLevel)"
+        - "src/game/bot.ts: scoreAction reads state.pitfalls[opponent]"
+        - "src/game/reducer.ts: log records triggeredPitfall and revealedPitfall as public outcomes"
+        - "src/components/GameLog.tsx: displays triggered/revealed trap information"
+        - "package.json: npm run test:static, npm run lint, npm run build"
+      candidates:
+        - "First: make Bot move choice invariant to the active hidden opponent trap while still estimating trap risk from move temptation and public trap history."
+        - "Next: add UI copy explaining Bot levels as reading style, not omniscience."
+        - "Later: online multiplayer should be server-authoritative with hidden traps held server-side, not static-export-only."
+  - id: T002
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Choose the first safe implementation slice by impact, confidence, reversibility, and verification strength."
+    inputs:
+      - "T001 receipt"
+      - "User preference on Bot direction, if provided."
+    constraints:
+      - "Do not implement."
+      - "Do not choose production online multiplayer as the first slice unless a backend/hosting decision is approved."
+      - "Prefer a slice that improves PvBot fun locally before networking."
+      - "If gameplay or visual UX is not approved, choose a design/spec task instead of implementation."
+    expected_output:
+      - "Decision."
+      - "Exact Worker objective."
+      - "allowed_files."
+      - "verify."
+      - "stop_if."
+      - "Blocked or deferred tasks."
+    receipt:
+      result: done
+      decision: "Implement the hidden-information Bot slice first. The user explicitly approved the design constraint: Bot may use board, hands, public logs, past trap history, own trap, and Casual-revealed trap information, but must not read the current unpublished opponent trap. This is small, high-impact, reversible, and locally verifiable."
+      next_allowed_task: T003
+      worker_objective: "Make PvBot move selection invariant to the active unpublished opponent trap by removing the direct state.pitfalls[opponent] avoidance and replacing it with public-information trap-risk inference."
+      allowed_files:
+        - "src/game/bot.ts"
+        - "tests/static/*.mjs"
+        - "docs/goals/mindgame-bot-online-ux/state.yaml"
+      verify:
+        - "npm run test:static"
+        - "npm run lint"
+        - "npm run build"
+      stop_if:
+        - "Need Next.js app files or visual UX files."
+        - "Need production networking or credentials."
+        - "Cannot prove hidden-trap invariance with a regression test."
+        - "Verification fails twice."
+      deferred_tasks:
+        - "UI copy for Bot reading style."
+        - "YaneuraOu/USI engine exploration."
+        - "Server-authoritative online multiplayer prototype."
+  - id: T003
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: default
+    objective: "Make PvBot move selection invariant to the active unpublished opponent trap by removing the direct state.pitfalls[opponent] avoidance and replacing it with public-information trap-risk inference."
+    allowed_files:
+      - "src/game/bot.ts"
+      - "tests/static/*.mjs"
+      - "docs/goals/mindgame-bot-online-ux/state.yaml"
+    verify:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Need Next.js app files or visual UX files."
+      - "Need production networking or credentials."
+      - "Cannot prove hidden-trap invariance with a regression test."
+      - "Verification fails twice."
+    receipt:
+      result: done
+      changed_files:
+        - "src/game/bot.ts"
+        - "tests/static/bot-hidden-information.mjs"
+      commands:
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+      summary: "Removed the Bot's direct active-opponent-pitfall read from move scoring. Bot move choice now estimates trap risk from public board temptation and prior revealed/triggered trap outcomes, and a regression test proves that changing only the unpublished opponent trap position does not change the hard Bot's selected move."
+  - id: T004
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium
+    objective: "Produce a concrete online multiplayer path for Pitfall Shogi after the local mind-game slice."
+    inputs:
+      - "Current app architecture."
+      - "Next.js static export / itch.io constraints."
+      - "Need for hidden trap secrecy, reconnects, spectators, and anti-cheat boundaries."
+    constraints:
+      - "Read-only."
+      - "Separate prototype, MVP, and production architecture."
+      - "Do not require credentials."
+    expected_output:
+      - "Recommended backend model."
+      - "State synchronization design."
+      - "Security/anti-cheat notes."
+      - "Smallest online prototype task."
+    receipt:
+      result: done
+      summary: "Online multiplayer should be server-authoritative because hidden traps are secret game state. The current static export/itch client can remain the UI, but it must connect to a separate realtime room server for online play. The server should own the reducer, board, hands, turn, and hidden pitfalls, then emit player-specific views so each client sees only board, hands, public log, own trap, and revealed/triggered trap outcomes."
+      recommended_backend_model: "Separate WebSocket room server for MVP; later production can use the same protocol behind managed hosting. Do not rely on client-only peer state for hidden traps."
+      state_sync_design:
+        - "Client sends intents: create room, join room, place trap, make move/drop, choose promotion, rematch."
+        - "Server validates phase, turn, legal move/drop, trap placement, and promotion using shared game logic."
+        - "Server stores hidden pitfalls and sends per-player snapshots rather than raw GameState."
+        - "Public log contains actions and revealed/triggered trap outcomes, not unpublished opponent trap positions."
+      security_notes:
+        - "Never serialize opponent active trap to a client."
+        - "Avoid spectator omniscience until replay/spectator policy is explicit."
+        - "Use room tokens and reconnect ownership for pass/resume."
+      smallest_online_prototype_task: "Add a local realtime prototype with a minimal Node WebSocket server and a per-player GameView type, reusing reducer logic server-side."
+      evidence:
+        - "next.config.ts currently exports a static app."
+        - "src/game/reducer.ts owns authoritative rule transitions locally."
+        - "src/game/pitfall.ts has spectator/all-visible helper that must not be used for online players."
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit whether the current tranche improved the user's original outcome."
+    inputs:
+      - "All done task receipts."
+      - "Last verification."
+      - "Current dirty diff."
+      - "User's original request."
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work is still queued or active."
+      - "Call out online multiplayer work that remains intentionally deferred."
+    expected_output:
+      - "complete | not_complete."
+      - "missing evidence."
+      - "next task if not complete."
+    receipt:
+      result: done
+      decision: complete
+      summary: "Current tranche is complete. The implemented slice directly addresses the user's hard constraint: PvBot no longer reads the active unpublished opponent trap while choosing a move, and a regression test proves hidden-trap-position invariance. Verification is green. Online multiplayer was intentionally left as architecture guidance because production online play needs a server-authoritative hidden-state room server."
+      completion_evidence:
+        - "src/game/bot.ts removed the direct state.pitfalls[opponent] active trap avoidance."
+        - "tests/static/bot-hidden-information.mjs checks that changing only the unpublished opponent trap does not change the hard Bot move."
+        - "npm run test:static: pass"
+        - "npm run lint: pass"
+        - "npm run build: pass"
+      remaining_work:
+        - "Add Bot UI copy explaining that Bot infers trap risk from public information."
+        - "Tune trap-risk coefficients through playtesting."
+        - "Prototype online multiplayer with a server-authoritative WebSocket room and per-player GameView snapshots."
+
+checks:
+  dirty_fingerprint: "repo already dirty before this goal board; see git status"
+  last_verification:
+    result: pass
+    task: T003
+    commands:
+      - "npm run test:static"
+      - "npm run lint"
+      - "npm run build"

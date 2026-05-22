@@ -1,0 +1,113 @@
+version: 2
+
+goal:
+  title: "Sound Effects v0"
+  slug: "sound-effects-v0"
+  kind: specific
+  tranche: "Implement UI-only sound effects, Settings controls, localStorage persistence, static tests, and full requested verification."
+  status: done
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: worker
+    assignee: PM
+    status: done
+    reasoning_hint: default
+    objective: "Implement Sound Effects v0 in UI/hook/constants/tests without touching reducer or room logic."
+    allowed_files:
+      - src/hooks/useSound.ts
+      - src/constants/sounds.ts
+      - src/app/page.tsx
+      - tests/static/sound-effects.mjs
+      - public/sounds/.gitkeep
+      - docs/goals/sound-effects-v0/goal.md
+      - docs/goals/sound-effects-v0/state.yaml
+    verify:
+      - "npm run test:static"
+      - "npx tsc --noEmit"
+      - "npm run lint"
+      - "npm run build"
+      - "npm run itch:zip"
+    stop_if:
+      - "Sound implementation requires reducer or room/server changes."
+      - "Online invite/copy bug requires credentials or deployed Worker changes."
+      - "Verification fails twice for the same unclear reason."
+    receipt:
+      result: done
+      changed_files:
+        - src/constants/sounds.ts
+        - src/hooks/useSound.ts
+        - src/app/page.tsx
+        - tests/static/sound-effects.mjs
+        - public/sounds/.gitkeep
+        - public/sounds/move.wav
+        - public/sounds/trap-place.wav
+        - public/sounds/trap-hit.wav
+        - public/sounds/trap-miss-reveal.wav
+        - public/sounds/check.wav
+        - public/sounds/game-over.wav
+        - docs/goals/sound-effects-v0/goal.md
+        - docs/goals/sound-effects-v0/state.yaml
+      commands:
+        - cmd: "npm run test:static -- tests/static/sound-effects.mjs"
+          status: pass
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "npx tsc --noEmit"
+          status: pass
+        - cmd: "npm run lint"
+          status: pass
+        - cmd: "npm run build"
+          status: pass
+        - cmd: "npm run itch:zip"
+          status: pass
+      summary: "Added UI-only sound constants, a localStorage-backed useSound hook, Settings Sound ON/OFF and 50%/100% volume controls, short WAV v0 assets, and UI state/log-driven playback for trapPlace, move, trapHit, trapMissReveal, check, and gameOver without reducer or room changes."
+  - id: T999
+    type: judge
+    assignee: PM
+    status: done
+    reasoning_hint: default
+    objective: "Audit whether Sound Effects v0 satisfies the requested tranche."
+    inputs:
+      - "T001 receipt"
+      - "Last verification"
+      - "Current dirty diff"
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work is still queued or active."
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "Sound Effects v0 satisfies the requested tranche: sound settings persist, Sound OFF no-ops, duplicate log sounds are deduped, playback waits for user activation, Local/Online state surfaces share the same UI detection, reducer/room logic is untouched, and the itch zip includes the generated WAV files."
+
+checks:
+  dirty_fingerprint: unknown
+  last_verification:
+    result: pass
+    task: T001
+    commands:
+      - "npm run test:static"
+      - "npx tsc --noEmit"
+      - "npm run lint"
+      - "npm run build"
+      - "npm run itch:zip"

@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: system-ui, "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +23,209 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes trap-burst-flash {
+  0% {
+    transform: scale(0.92);
+    filter: saturate(1);
+  }
+  45% {
+    transform: scale(1.08);
+    filter: saturate(1.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: saturate(1);
+  }
+}
+
+@keyframes trap-burst-ring {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes trap-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  14%,
+  76% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+}
+
+.trap-burst-cell {
+  animation: trap-burst-flash 720ms ease-out both;
+}
+
+.trap-burst-ring {
+  animation: trap-burst-ring 780ms ease-out both;
+}
+
+.trap-toast {
+  animation: trap-toast 1600ms ease-out both;
+}
+
+@keyframes trap-player-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+    filter: brightness(1);
+  }
+  18% {
+    transform: translateX(-5px);
+    filter: brightness(0.82) saturate(1.4);
+  }
+  34% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-3px);
+  }
+  66% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes trap-opponent-spark {
+  0%,
+  100% {
+    filter: brightness(1) saturate(1);
+    box-shadow: 0 0 0 rgba(251, 191, 36, 0);
+  }
+  45% {
+    filter: brightness(1.22) saturate(1.45);
+    box-shadow: 0 0 34px rgba(251, 191, 36, 0.38);
+  }
+}
+
+.trap-player-shake {
+  animation: trap-player-shake 520ms ease-out both;
+}
+
+.trap-opponent-spark {
+  animation: trap-opponent-spark 900ms ease-out both;
+}
+
+@keyframes trap-miss-smoke {
+  0% {
+    filter: saturate(0.8);
+  }
+  45% {
+    filter: saturate(1.8);
+  }
+  100% {
+    filter: saturate(1);
+  }
+}
+
+@keyframes trap-miss-cloud {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.35) translateY(8px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.75) translateY(-10px);
+  }
+}
+
+.trap-miss-smoke {
+  animation: trap-miss-smoke 980ms ease-out both;
+}
+
+.trap-miss-cloud {
+  animation: trap-miss-cloud 980ms ease-out both;
+}
+
+@keyframes kuno-usa-pixel-snap {
+  0% {
+    transform: translate(0, 8px) scale(0.92);
+    filter: saturate(1.1);
+  }
+  18% {
+    transform: translate(-4px, -6px) scale(1.08);
+    filter: saturate(1.55);
+  }
+  32% {
+    transform: translate(4px, 0) scale(1);
+  }
+  48% {
+    transform: translate(-2px, -2px) scale(1.04);
+  }
+  64%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    filter: saturate(1.25);
+  }
+}
+
+.kuno-usa-pixel-snap {
+  animation: kuno-usa-pixel-snap 560ms steps(1, end) both;
+  image-rendering: pixelated;
+}
+
+@keyframes log-entry-pop {
+  0% {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes log-trap-hit {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(244, 63, 94, 0);
+  }
+  42% {
+    box-shadow: 0 0 24px rgba(244, 63, 94, 0.45);
+  }
+}
+
+.log-entry-pop {
+  animation: log-entry-pop 220ms ease-out both;
+}
+
+.log-trap-hit {
+  animation: log-entry-pop 220ms ease-out both, log-trap-hit 1100ms ease-out both;
+}
+
+.log-trap-player {
+  animation: log-entry-pop 220ms ease-out both, trap-player-shake 520ms ease-out both;
+}
+
+.log-trap-opponent {
+  animation: log-entry-pop 220ms ease-out both, trap-opponent-spark 1100ms ease-out both;
+}
+
+@keyframes check-pulse {
+  0%, 100% {
+    background-color: rgba(239, 68, 68, 0.2);
+    box-shadow: inset 0 0 12px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.6);
+    box-shadow: inset 0 0 24px rgba(239, 68, 68, 0.9);
+  }
+}
+
+.check-king-pulse {
+  animation: check-pulse 1.2s infinite ease-in-out;
 }

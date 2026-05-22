@@ -5,8 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next build",
+    "itch:zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-itch.ps1",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:static": "node --test tests/static/*.mjs",
+    "worker:dev": "wrangler dev --local"
   },
   "dependencies": {
     "next": "16.2.6",

@@ -1,0 +1,53 @@
+goal:
+  slug: mode-entry-ux
+  status: done
+  classification: specific
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Create Goal Maker control files for mode entry UX improvements."
+    receipt:
+      result: done
+      changed_files:
+        - docs/goals/mode-entry-ux/goal.md
+        - docs/goals/mode-entry-ux/state.yaml
+      summary: "Seeded a focused UI/UX tranche for clearer PvP/PvBot/Online mode state and online no-view handling."
+  - id: T002
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Refine mode selection and online waiting/error UX with static tests first."
+    allowed_files:
+      - src/app/page.tsx
+      - tests/static/*.mjs
+      - docs/goals/mode-entry-ux/state.yaml
+    verify:
+      - npm run test:static
+      - npm run lint
+      - npm run build
+    stop_if:
+      - "Need to alter room server or reducer behavior."
+      - "Need to expose raw hidden GameState in GameView."
+      - "Verification fails twice for the same unresolved reason."
+    receipt:
+      result: done
+      changed_files:
+        - src/app/page.tsx
+        - tests/static/mode-entry-ux.mjs
+        - tests/static/online-game-input.mjs
+        - docs/goals/mode-entry-ux/state.yaml
+      summary: "Replaced PvP/PvBot ON toggles with explicit local mode choice, scoped bot difficulty copy to PvBot, added online seat/action status, and prevented online no-view from rendering the local board."
+      verification:
+        - npm run test:static
+        - npm run lint
+        - npm run build
+  - id: T999
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Audit the mode entry UX tranche against the user-reported confusion and verification output."
+    receipt:
+      result: done
+      summary: "Static tests cover the reported confusion cases; lint and production build pass. Browser screenshot check confirmed the first screen now labels the mode choice and PvBot-only difficulty area clearly."

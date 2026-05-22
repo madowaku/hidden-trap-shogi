@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/.playwright-cli/
+/.wrangler/
 
 # next.js
 /.next/
@@ -29,6 +31,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev-server*.log
+worker-dev*.log
 
 # env files (can opt-in for committing if needed)
 .env*

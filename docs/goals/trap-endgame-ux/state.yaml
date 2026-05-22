@@ -1,0 +1,82 @@
+goal:
+  slug: trap-endgame-ux
+  status: done
+  classification: specific
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Create Goal Maker control files and define the implementation tranche."
+    receipt:
+      result: done
+      changed_files:
+        - docs/goals/trap-endgame-ux/goal.md
+        - docs/goals/trap-endgame-ux/state.yaml
+      summary: "Seeded a specific tranche for trap-repeat prevention, casual reveal effects, resign UX, and check alert."
+  - id: T002
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Implement the requested trap and endgame UX improvements with failing tests first."
+    allowed_files:
+      - src/game/types.ts
+      - src/game/constants.ts
+      - src/game/reducer.ts
+      - src/game/pitfall.ts
+      - src/game/bot.ts
+      - src/game/view.ts
+      - src/game/room.ts
+      - src/hooks/useGame.ts
+      - src/app/page.tsx
+      - src/app/globals.css
+      - tests/static/*.mjs
+      - docs/goals/trap-endgame-ux/state.yaml
+    verify:
+      - npm run test:static
+      - npx tsc --noEmit
+      - npm run lint
+      - npm run build
+      - npm run itch:zip
+    stop_if:
+      - "Need to expose hidden opponent pitfall state to GameView."
+      - "Online command handling needs a contract-breaking payload change."
+      - "Verification fails twice for the same unresolved reason."
+    receipt:
+      result: done
+      changed_files:
+        - src/game/types.ts
+        - src/game/constants.ts
+        - src/game/reducer.ts
+        - src/game/pitfall.ts
+        - src/game/board.ts
+        - src/game/bot.ts
+        - src/hooks/useGame.ts
+        - src/app/page.tsx
+        - src/app/globals.css
+        - src/components/Board.tsx
+        - src/components/Cell.tsx
+        - tests/static/game-reducer-king-pitfalls.mjs
+        - tests/static/bot-hidden-information.mjs
+        - tests/static/mock-room-server.mjs
+        - tests/static/trap-endgame-ux.mjs
+      commands:
+        - cmd: npm run test:static
+          status: pass
+        - cmd: npx tsc --noEmit
+          status: pass
+        - cmd: npm run lint
+          status: pass
+        - cmd: npm run build
+          status: pass
+        - cmd: npm run itch:zip
+          status: pass
+      summary: "Implemented repeat same-square pitfall prevention, bot filtering, local resign, casual missed-trap reveal effects, resign confirmation UI, and check warning display."
+  - id: T999
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Audit the tranche against the user's requested checklist and verification output."
+    receipt:
+      result: done
+      summary: "Requested tranche is implemented and verified: repeat pitfall restriction, bot compliance, online reducer rejection, casual miss reveal, local/online resign confirmation, check warning, and Known Issues copy are covered."

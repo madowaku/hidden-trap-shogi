@@ -1,0 +1,76 @@
+version: 2
+goal:
+  slug: online-room-presence-stats
+  status: done
+  classification: specific
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Create Goal Maker control files for online room presence and stats."
+    receipt:
+      result: done
+      changed_files:
+        - docs/goals/online-room-presence-stats/goal.md
+        - docs/goals/online-room-presence-stats/state.yaml
+      summary: "Seeded a bounded online UX tranche for rematch, connection status, waiting emphasis, presence, and in-match trap stats."
+  - id: T002
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Implement online rematch, presence, connection/waiting UX, and in-match trap stats with tests first."
+    allowed_files:
+      - src/server/contract.ts
+      - src/game/types.ts
+      - src/game/view.ts
+      - src/game/pitfall.ts
+      - src/game/room.ts
+      - src/worker/room-worker.ts
+      - src/hooks/useOnlineRoom.ts
+      - src/app/page.tsx
+      - tests/static/*.mjs
+      - docs/goals/online-room-presence-stats/state.yaml
+    verify:
+      - npm run test:static
+      - npm run lint
+      - npm run build
+    stop_if:
+      - "Need persistent database, accounts, or rankings."
+      - "Need to expose raw hidden GameState or hidden pitfall maps in wire payloads."
+      - "Verification fails twice for the same unresolved reason."
+    receipt:
+      result: done
+      changed_files:
+        - src/server/contract.ts
+        - src/game/types.ts
+        - src/game/view.ts
+        - src/game/pitfall.ts
+        - src/game/room.ts
+        - src/worker/room-worker.ts
+        - src/hooks/useOnlineRoom.ts
+        - src/app/page.tsx
+        - tests/static/online-presence-stats.mjs
+        - tests/static/mock-room-server.mjs
+        - tests/static/cloudflare-room-worker.mjs
+        - tests/static/game-view-hidden-information.mjs
+        - docs/goals/online-room-presence-stats/state.yaml
+      summary: "Added room presence with spectators, viewer-relative match trap stats, live spectator hidden-trap safety, online rematch requests, connection warning UI, and stronger opponent-waiting UI."
+      commands:
+        - cmd: npm run test:static
+          status: pass
+        - cmd: npm run lint
+          status: pass
+        - cmd: npm run build
+          status: pass
+        - cmd: npm run itch:zip
+          status: pass
+  - id: T999
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Audit whether the online presence/stats tranche satisfies the requested UX improvements."
+    receipt:
+      result: done
+      decision: complete
+      summary: "The tranche covers the requested rematch button, connection/reconnect warning, opponent-waiting emphasis, room presence, and in-match trap stats without adding accounts, rankings, or persistent storage."

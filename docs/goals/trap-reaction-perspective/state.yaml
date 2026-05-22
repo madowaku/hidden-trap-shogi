@@ -1,0 +1,66 @@
+goal:
+  slug: trap-reaction-perspective
+  status: done
+  classification: specific
+tasks:
+  - id: T001
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Create Goal Maker control files for the viewer-specific trap reaction tranche."
+    receipt:
+      result: done
+      changed_files:
+        - docs/goals/trap-reaction-perspective/goal.md
+        - docs/goals/trap-reaction-perspective/state.yaml
+      summary: "Seeded a focused tranche for player_trapped/opponent_trapped presentation and new mascot assets."
+  - id: T002
+    type: worker
+    assignee: PM
+    status: done
+    objective: "Implement viewer-specific trap hit reactions without changing core game rules or leaking hidden trap state."
+    allowed_files:
+      - src/game/reaction.ts
+      - src/components/NinjaGuide.tsx
+      - src/components/GameLog.tsx
+      - src/app/page.tsx
+      - src/app/globals.css
+      - public/mascots/triumphs-kunousa-reaction.png
+      - public/mascots/trapped-kunousa-reaction.png
+      - tests/static/*.mjs
+      - docs/goals/trap-reaction-perspective/state.yaml
+    verify:
+      - npm run test:static
+      - npm run lint
+      - npm run build
+    stop_if:
+      - "Need to add hidden pitfall maps or pendingPitfall to GameView."
+      - "Need to alter reducer trap resolution behavior."
+      - "Image adjustment cannot produce usable UI assets from provided files."
+    receipt:
+      result: done
+      changed_files:
+        - src/game/reaction.ts
+        - src/components/NinjaGuide.tsx
+        - src/components/GameLog.tsx
+        - src/app/page.tsx
+        - src/app/globals.css
+        - public/mascots/triumphs-kunousa-reaction.png
+        - public/mascots/trapped-kunousa-reaction.png
+        - tests/static/trap-reaction-perspective.mjs
+      commands:
+        - cmd: npm run test:static
+          status: pass
+        - cmd: npm run lint
+          status: pass
+        - cmd: npm run build
+          status: pass
+      summary: "Added viewer-specific trap reaction kind detection, split trap hit toasts/log styling/Kuno-Usa variants, and generated transparent reaction mascot assets from the provided images."
+  - id: T999
+    type: pm
+    assignee: PM
+    status: done
+    objective: "Audit the implemented trap reaction tranche against the requested behavior and verification output."
+    receipt:
+      result: done
+      summary: "The tranche satisfies the requested viewer split: player_trapped and opponent_trapped are derived from public log viewer context, missed traps return no hit reaction, new transparent reaction assets are used, and test/static, lint, and build all pass."
