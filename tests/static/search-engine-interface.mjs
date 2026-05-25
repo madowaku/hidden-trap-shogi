@@ -100,6 +100,43 @@ test('static fake search engine can feed deterministic candidates through the bo
   assert.deepEqual(candidates, [candidate]);
 });
 
+test('Hard bot can choose the top SearchEngine candidate through the GameView boundary', () => {
+  const { simpleBot } = loadGameModule('src/game/bot.ts');
+  const { createStaticSearchEngine } = loadGameModule('src/game/search-engine.ts');
+  const topCandidate = {
+    action: {
+      type: 'move',
+      from: { row: 6, col: 4 },
+      to: { row: 5, col: 4 },
+      piece: { kind: 'pawn', owner: 'sente' },
+    },
+    to: { row: 5, col: 4 },
+    shogiScore: 80,
+    trapRisk: 0,
+    finalScore: 80,
+  };
+  const lowerCandidate = {
+    action: {
+      type: 'move',
+      from: { row: 6, col: 3 },
+      to: { row: 5, col: 3 },
+      piece: { kind: 'pawn', owner: 'sente' },
+    },
+    to: { row: 5, col: 3 },
+    shogiScore: 10,
+    trapRisk: 0,
+    finalScore: 10,
+  };
+
+  const chosen = simpleBot.decideMoveWithSearchEngine(
+    viewForSearch(),
+    createStaticSearchEngine([topCandidate, lowerCandidate]),
+    { depth: 2, maxCandidates: 2 }
+  );
+
+  assert.deepEqual(chosen, topCandidate.action);
+});
+
 test('shallow search engine ranks visible GameView moves without raw hidden state', () => {
   const { createShallowSearchEngine } = loadGameModule('src/game/search-engine.ts');
   const view = viewForSearch();

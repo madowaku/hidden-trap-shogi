@@ -14,7 +14,7 @@ test('bot timeout branches return cleanup handlers', () => {
   );
 
   for (const assignment of timeoutAssignments) {
-    const branch = source.slice(assignment.index, assignment.index + 360);
+    const branch = source.slice(assignment.index, assignment.index + 720);
     assert.match(branch, /return\s*\(\)\s*=>\s*\{/);
     assert.match(branch, /clearBotTimeout\(\)/);
   }
@@ -50,6 +50,15 @@ test('bot levels are typed and wired from page to bot decisions', () => {
   assert.match(page, /Easy/);
   assert.match(page, /Normal/);
   assert.match(page, /Hard/);
+});
+
+test('Hard bot move selection is wired through shallow SearchEngine GameView boundary', () => {
+  const hook = readFileSync(new URL('../../src/hooks/useGame.ts', import.meta.url), 'utf8');
+
+  assert.match(hook, /createShallowSearchEngine/);
+  assert.match(hook, /getPlayerView\(state,\s*botPlayer\)/);
+  assert.match(hook, /decideMoveWithSearchEngine/);
+  assert.match(hook, /state\.config\.botLevel === 'hard'/);
 });
 
 test('bot difficulty copy frames suspicion and greed instead of deep search', () => {

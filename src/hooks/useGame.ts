@@ -10,6 +10,8 @@ import { createInitialGameState } from '@/game/constants';
 import { gameReducer } from '@/game/reducer';
 import { getLegalMoves, getLegalDrops } from '@/game/board';
 import { simpleBot } from '@/game/bot';
+import { createShallowSearchEngine } from '@/game/search-engine';
+import { getPlayerView } from '@/game/view';
 
 const BOT_DELAY = 500; // ms
 
@@ -137,7 +139,13 @@ export function useGame(
       setBotPhase('着手中...');
       clearBotTimeout();
       botTimeoutRef.current = setTimeout(() => {
-        const action = simpleBot.decideMove(state, botPlayer, state.config.botLevel);
+        const action = state.config.botLevel === 'hard'
+          ? simpleBot.decideMoveWithSearchEngine(
+            getPlayerView(state, botPlayer),
+            createShallowSearchEngine(),
+            { depth: 2, maxCandidates: 1 }
+          )
+          : simpleBot.decideMove(state, botPlayer, state.config.botLevel);
         dispatch({ type: 'EXECUTE_MOVE', action });
         botTimeoutRef.current = null;
         setBotPhase(null);

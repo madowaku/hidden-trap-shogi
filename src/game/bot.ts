@@ -143,6 +143,19 @@ export class SimpleBot implements BotStrategy {
     const limit = options.maxCandidates ?? 5;
     return engine.analyze(view, { ...options, maxCandidates: limit }).slice(0, limit);
   }
+
+  decideMoveWithSearchEngine(
+    view: GameView,
+    engine: SearchEngine,
+    options: SearchOptions = {}
+  ): GameAction {
+    const candidates = engine.analyze(view, { depth: 2, maxCandidates: 1, ...options });
+    const best = candidates[0];
+    if (!best) {
+      throw new Error('No search engine moves available for bot');
+    }
+    return best.action;
+  }
 }
 
 // --- ユーティリティ ---
