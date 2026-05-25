@@ -17,7 +17,9 @@ import type {
   TrapRiskEntry,
   BotMoveDebugSummary,
   OpponentTrapTendency,
+  GameView,
 } from './types';
+import type { EngineCandidate, SearchEngine, SearchOptions } from './search-engine';
 import {
   applyDrop,
   applyMove,
@@ -131,6 +133,15 @@ export class SimpleBot implements BotStrategy {
         trapRisk,
         trapPenalty,
       }));
+  }
+
+  debugSearchEngineCandidates(
+    view: GameView,
+    engine: SearchEngine,
+    options: SearchOptions = {}
+  ): readonly EngineCandidate[] {
+    const limit = options.maxCandidates ?? 5;
+    return engine.analyze(view, { ...options, maxCandidates: limit }).slice(0, limit);
   }
 }
 

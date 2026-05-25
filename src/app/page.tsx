@@ -9,12 +9,15 @@ import PieceStand from '@/components/PieceStand';
 import { FEEDBACK_URL } from '@/constants/config';
 import { canPromote, getLegalDrops, getLegalMoves, isKingSquare, isPlayerInCheck, posEquals, findKing } from '@/game/board';
 import { simpleBot } from '@/game/bot';
+import { createShallowSearchEngine } from '@/game/search-engine';
 import { useGame } from '@/hooks/useGame';
 import { useOnlineRoom } from '@/hooks/useOnlineRoom';
 import { useSound } from '@/hooks/useSound';
 import { getVisiblePitfalls } from '@/game/pitfall';
 import { getTrapReactionKind } from '@/game/reaction';
+import { getPlayerView } from '@/game/view';
 import type { BoardOrientation } from '@/game/orientation';
+import type { EngineCandidate, SearchEngine } from '@/game/search-engine';
 import type { BotLevel, BotMoveDebugSummary, GameMode, LogEntry, MoveAction, Phase, PieceKind, Player, Position, UISelection, Viewer } from '@/game/types';
 
 type Language = 'ja' | 'en';
@@ -580,6 +583,21 @@ export default function Home() {
 
     try {
       return simpleBot.debugMoveCandidates(state, botPlayer, botLevel, 5);
+    } catch {
+      return [];
+    }
+  }, [botLevel, debugBotEnabled, gameMode, isOnlineMode, showStartScreen, state]);
+  const searchEngineDebugCandidates = useMemo<readonly EngineCandidate[]>(() => {
+    if (!debugBotEnabled || showStartScreen || isOnlineMode || gameMode !== 'pvbot') return [];
+    const botPlayer = state.config.botPlayer;
+    if (!botPlayer || botLevel !== 'hard') return [];
+
+    const engine: SearchEngine = createShallowSearchEngine();
+    try {
+      return simpleBot.debugSearchEngineCandidates(getPlayerView(state, botPlayer), engine, {
+        depth: 2,
+        maxCandidates: 5,
+      });
     } catch {
       return [];
     }
@@ -1874,7 +1892,7 @@ export default function Home() {
           </div>
         )}
 
-        {!showStartScreen && !isOnlineMode && gameMode === 'pvbot' && debugBotEnabled && botDebugCandidates.length > 0 && (
+        {!showStartScreen && !isOnlineMode && gameMode === 'pvbot' && debugBotEnabled && (botDebugCandidates.length > 0 || searchEngineDebugCandidates.length > 0) && (
           <section className="rounded-lg border border-amber-300/20 bg-amber-400/8 px-3 py-2 text-amber-50">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-xs font-black uppercase tracking-[0.22em] text-amber-100/80">
@@ -1902,6 +1920,31 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            {searchEngineDebugCandidates.length > 0 && (
+              <>
+                <div className="mt-3 text-[11px] font-black uppercase tracking-[0.18em] text-amber-100/70">
+                  SearchEngine candidates
+                </div>
+                <div className="mt-2 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-5">
+                  {searchEngineDebugCandidates.map((candidate, index) => (
+                    <div
+                      key={`search-engine-debug-${index}-${candidate.action.type}-${candidate.to.row}-${candidate.to.col}`}
+                      className="rounded-md border border-amber-100/15 bg-black/20 px-2 py-1.5"
+                    >
+                      <div className="flex items-center justify-between gap-2 text-[11px] font-black">
+                        <span>#{index + 1}</span>
+                        <span>{formatSearchEngineDebugAction(candidate)}</span>
+                      </div>
+                      <div className="mt-1 grid grid-cols-3 gap-1 text-[10px] font-bold text-amber-50/75">
+                        <span>shogi {formatDebugNumber(candidate.shogiScore)}</span>
+                        <span>trapRisk {formatDebugNumber(candidate.trapRisk)}</span>
+                        <span>final {formatDebugNumber(candidate.finalScore)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </section>
         )}
 
@@ -2307,6 +2350,14 @@ export default function Home() {
 }
 
 function formatBotDebugAction(candidate: BotMoveDebugSummary): string {
+  if (candidate.action.type === 'drop') {
+    return `drop ${candidate.action.piece.kind} ${formatPos(candidate.to)}`;
+  }
+
+  return `${formatPos(candidate.action.from)} -> ${formatPos(candidate.to)}`;
+}
+
+function formatSearchEngineDebugAction(candidate: EngineCandidate): string {
   if (candidate.action.type === 'drop') {
     return `drop ${candidate.action.piece.kind} ${formatPos(candidate.to)}`;
   }

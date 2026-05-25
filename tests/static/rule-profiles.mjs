@@ -65,3 +65,32 @@ test('reducer reads missed-trap reveal behavior through the rule profile boundar
   assert.match(reducerSource, /getRuleProfile/);
   assert.doesNotMatch(reducerSource, /revealedPitfall:\s*state\.config\.casualMode/);
 });
+
+test('rule profile controls whether missed opponent traps are written to the log', () => {
+  const { createInitialGameState } = loadGameModule('src/game/constants.ts');
+  const { gameReducer } = loadGameModule('src/game/reducer.ts');
+
+  function playOneMissedTrapTurn(casualMode) {
+    let state = createInitialGameState('pvbot', casualMode);
+    state = {
+      ...state,
+      pitfalls: {
+        sente: null,
+        gote: { position: { row: 4, col: 4 }, owner: 'gote' },
+      },
+    };
+    state = gameReducer(state, { type: 'PLACE_PITFALL', position: { row: 5, col: 5 } });
+    return gameReducer(state, {
+      type: 'EXECUTE_MOVE',
+      action: {
+        type: 'move',
+        from: { row: 6, col: 0 },
+        to: { row: 5, col: 0 },
+        piece: { kind: 'pawn', owner: 'sente' },
+      },
+    });
+  }
+
+  assert.deepEqual(playOneMissedTrapTurn(true).log.at(-1).revealedPitfall, { row: 4, col: 4 });
+  assert.equal(playOneMissedTrapTurn(false).log.at(-1).revealedPitfall, undefined);
+});

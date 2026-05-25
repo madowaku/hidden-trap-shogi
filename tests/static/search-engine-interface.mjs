@@ -77,3 +77,74 @@ test('createNoopSearchEngine returns stable candidates without reading hidden st
   assert.deepEqual(first, second);
   assert.deepEqual(first, []);
 });
+
+test('static fake search engine can feed deterministic candidates through the bot boundary', () => {
+  const { simpleBot } = loadGameModule('src/game/bot.ts');
+  const { createStaticSearchEngine } = loadGameModule('src/game/search-engine.ts');
+  const candidate = {
+    action: {
+      type: 'move',
+      from: { row: 6, col: 4 },
+      to: { row: 5, col: 4 },
+      piece: { kind: 'pawn', owner: 'sente' },
+    },
+    to: { row: 5, col: 4 },
+    shogiScore: 12,
+    trapRisk: 3,
+    finalScore: 9,
+  };
+
+  const engine = createStaticSearchEngine([candidate]);
+  const candidates = simpleBot.debugSearchEngineCandidates(viewForSearch(), engine, { maxCandidates: 1 });
+
+  assert.deepEqual(candidates, [candidate]);
+});
+
+test('shallow search engine ranks visible GameView moves without raw hidden state', () => {
+  const { createShallowSearchEngine } = loadGameModule('src/game/search-engine.ts');
+  const view = viewForSearch();
+  view.board = emptyBoard();
+  view.board[4][4] = { kind: 'rook', owner: 'sente' };
+  view.board[4][6] = { kind: 'gold', owner: 'gote' };
+
+  const candidates = createShallowSearchEngine().analyze(view, { depth: 1, maxCandidates: 2 });
+
+  assert.equal(candidates.length, 2);
+  assert.deepEqual(candidates[0].to, { row: 4, col: 6 });
+  assert.ok(candidates[0].shogiScore > candidates[1].shogiScore);
+});
+
+test('Bot Debug page has a SearchEngine candidate lane prepared behind debugBot', () => {
+  const pageSource = readFileSync(resolve(root, 'src/app/page.tsx'), 'utf8');
+
+  assert.match(pageSource, /searchEngineDebugCandidates/);
+  assert.match(pageSource, /createShallowSearchEngine/);
+  assert.match(pageSource, /SearchEngine/);
+});
+
+function emptyBoard() {
+  return Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => null));
+}
+
+function viewForSearch() {
+  return {
+    viewer: 'sente',
+    board: [],
+    currentPlayer: 'sente',
+    turn: 1,
+    phase: { type: 'MOVE_SELECTION' },
+    visiblePitfalls: [],
+    hands: {
+      sente: { rook: 0, bishop: 0, gold: 0, silver: 0, knight: 0, lance: 0, pawn: 0 },
+      gote: { rook: 0, bishop: 0, gold: 0, silver: 0, knight: 0, lance: 0, pawn: 0 },
+    },
+    log: [],
+    config: {
+      casualMode: true,
+      gameMode: 'pvbot',
+      botLevel: 'normal',
+      botPlayer: 'gote',
+    },
+    winner: null,
+  };
+}

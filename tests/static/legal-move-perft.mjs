@@ -41,9 +41,11 @@ function loadGameModule(relativePath) {
 
 const {
   applyMove,
+  canPromote,
   getAllLegalMoves,
   getLegalDrops,
   getLegalMoves,
+  mustPromote,
 } = loadGameModule('src/game/board.ts');
 const { createInitialBoard } = loadGameModule('src/game/constants.ts');
 
@@ -103,6 +105,37 @@ test('drop generation records current hand-piece restrictions', () => {
   assert.equal(getLegalDrops(blank, 'gote', 'pawn').length, 72);
   assert.equal(getLegalDrops(blank, 'sente', 'knight').length, 63);
   assert.equal(getLegalDrops(blank, 'gote', 'knight').length, 63);
+});
+
+test('promotion-zone positions record current promotable and forced-promotion counts', () => {
+  const board = emptyBoard();
+  board[3][4] = { kind: 'rook', owner: 'sente' };
+  board[1][4] = { kind: 'gold', owner: 'gote' };
+
+  const rookMoves = getLegalMoves(board, { row: 3, col: 4 });
+  assert.equal(rookMoves.length, 15);
+  assert.equal(
+    rookMoves.filter((to) => canPromote(board[3][4], { row: 3, col: 4 }, to)).length,
+    2
+  );
+
+  board[3][4] = null;
+  board[1][4] = { kind: 'pawn', owner: 'sente' };
+  const pawnDestination = getLegalMoves(board, { row: 1, col: 4 })[0];
+
+  assert.deepEqual(pawnDestination, { row: 0, col: 4 });
+  assert.equal(canPromote(board[1][4], { row: 1, col: 4 }, pawnDestination), true);
+  assert.equal(mustPromote(board[1][4], pawnDestination), true);
+});
+
+test('nifu-style pawn drop counts are fixed by occupied friendly pawn files', () => {
+  const board = createInitialBoard();
+
+  for (let col = 0; col < 9; col++) board[6][col] = null;
+  assert.equal(getLegalDrops(board, 'sente', 'pawn').length, 50);
+
+  board[6][0] = { kind: 'pawn', owner: 'sente' };
+  assert.equal(getLegalDrops(board, 'sente', 'pawn').length, 44);
 });
 
 test('sliding pieces stop at blockers and include enemy captures', () => {
