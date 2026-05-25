@@ -25,6 +25,7 @@ import {
 } from './board';
 import { checkPitfall, isRepeatPitfallPosition } from './pitfall';
 import { createInitialGameState } from './constants';
+import { getRuleProfile } from './rules';
 
 // --- Action Types ---
 
@@ -248,6 +249,7 @@ function finalizeTurn(
   failedAction?: GameAction
 ): GameState {
   const opponent = getOpponent(state.currentPlayer);
+  const ruleProfile = getRuleProfile(state.config.casualMode);
 
   // ログエントリ作成
   const logEntry: LogEntry = {
@@ -260,8 +262,7 @@ function finalizeTurn(
     triggeredPitfall: pitfallTriggered
       ? state.pitfalls[opponent]?.position ?? undefined
       : undefined,
-    // Casualモード: 相手が設置した落とし穴位置を公開
-    revealedPitfall: state.config.casualMode
+    revealedPitfall: ruleProfile.revealMissedPitfalls
       ? state.pitfalls[opponent]?.position ?? undefined
       : undefined,
   };
@@ -302,6 +303,7 @@ function finalizeTurnWithWinner(
   winner: Player
 ): GameState {
   const opponent = getOpponent(state.currentPlayer);
+  const ruleProfile = getRuleProfile(state.config.casualMode);
 
   const logEntry: LogEntry = {
     turn: state.turn,
@@ -309,7 +311,7 @@ function finalizeTurnWithWinner(
     action,
     pitfallSet: state.pendingPitfall!.position,
     pitfallTriggered: false,
-    revealedPitfall: state.config.casualMode
+    revealedPitfall: ruleProfile.revealMissedPitfalls
       ? state.pitfalls[opponent]?.position ?? undefined
       : undefined,
   };
