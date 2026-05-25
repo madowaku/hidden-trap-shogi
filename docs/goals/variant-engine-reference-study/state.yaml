@@ -1,0 +1,177 @@
+version: 2
+
+goal:
+  title: "Variant Engine Reference Study"
+  slug: "variant-engine-reference-study"
+  kind: specific
+  tranche: "Read YaneuraOu and Haitaka Variants as references, map them to Pitfall Shogi's current engine boundaries, then complete the first safe verified design/test-hardening slice without importing external engine code."
+  status: done
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+
+agents:
+  scout: installed
+  worker: installed
+  judge: installed
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium
+    objective: "Map the reference evidence and current Pitfall Shogi engine boundaries into concrete design implications."
+    inputs:
+      - "YaneuraOu historical subprojects page"
+      - "YaneuraOu repository README/license signals"
+      - "Haitaka Variants repository README/license signals"
+      - README.md
+      - src/game
+      - src/hooks/useGame.ts
+      - src/hooks/useOnlineRoom.ts
+      - src/server/contract.ts
+      - tests/static
+    constraints:
+      - "Read-only."
+      - "Do not edit implementation files."
+      - "Do not propose direct YaneuraOu code reuse."
+      - "Preserve hidden-information boundaries and TrapBelief separation."
+      - "Prefer file-path evidence over generic engine advice."
+    expected_output:
+      - "Reference summary with source URLs"
+      - "Repo boundary map"
+      - "Candidate perft/legal-move test gaps"
+      - "Candidate rule-profile and SearchEngine interface implications"
+      - "Candidate next Worker tasks with allowed files and verification commands"
+    receipt:
+      result: done
+      summary: "Mapped references and current code. Haitaka's highest-value local lesson is perft/legal-move test discipline around a separated move generator; its README documents a Cargo workspace split, perft examples, browser WASM search APIs, and MIT licensing. YaneuraOu is useful as a variant-engine/search design reference but its GPL-3.0 license and USI/native-engine scope make direct code reuse inappropriate. Pitfall Shogi already separates board/legal moves, reducer, view, room, and bot, with hidden-trap privacy tests, but lacks a focused perft-style legal move count suite."
+      source_urls:
+        - "https://github.com/na2hiro/haitaka-variants"
+        - "https://github.com/na2hiro/haitaka-variants/blob/main/LICENSE"
+        - "https://github.com/yaneurao/YaneuraOu"
+        - "https://yaneuraou.yaneu.com/2016/11/20/%E3%82%84%E3%81%AD%E3%81%86%E3%82%89%E7%8E%8B-%E7%8E%8B%E6%89%8B%E5%B0%86%E6%A3%8B%E3%82%A8%E3%83%87%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E4%BB%AE%E5%85%AC%E9%96%8B%E3%81%97%E3%81%BE%E3%81%97/"
+      evidence:
+        - "src/game/board.ts"
+        - "src/game/reducer.ts"
+        - "src/game/bot.ts"
+        - "src/game/view.ts"
+        - "src/game/room.ts"
+        - "tests/static/game-reducer-king-pitfalls.mjs"
+        - "tests/static/bot-hidden-information.mjs"
+        - "tests/static/game-view-hidden-information.mjs"
+        - "tests/static/mock-room-server.mjs"
+      candidate_tasks:
+        - "Add tests/static/legal-move-perft.mjs with fixed legal-move and drop-count positions for the initial board, sliders, promotions, and hand drops."
+        - "Later: document Strict/Casual rule-profile gaps before changing behavior."
+        - "Later: sketch a SearchEngine interface that consumes GameView and returns candidates without raw hidden pitfalls."
+  - id: T002
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Choose the first safe local task from Scout findings by impact, reversibility, licensing safety, and verification strength."
+    inputs:
+      - "T001 receipt"
+    constraints:
+      - "Do not implement."
+      - "Reject Rust/WASM/NNUE adoption for this tranche."
+      - "Reject tasks that weaken hidden-trap privacy."
+      - "Prefer a small TypeScript test or design-document slice over engine integration."
+    expected_output:
+      - "Decision"
+      - "Exact Worker objective"
+      - "allowed_files"
+      - "verify"
+      - "stop_if"
+      - "Deferred tasks"
+    receipt:
+      result: done
+      decision: "Do the perft/legal-move test slice first. It is licensing-safe, reversible, directly inspired by Haitaka's perft discipline, and strengthens the exact boundary that future rule profiles or search engines will depend on. Defer Rust/WASM/NNUE, YaneuraOu-style search integration, and SearchEngine API design until local move-generation invariants are better pinned."
+      next_allowed_task: T003
+      worker_objective: "Add a focused static test file that records perft-style legal move and drop-count invariants for Pitfall Shogi's current move generator."
+      allowed_files:
+        - "tests/static/legal-move-perft.mjs"
+        - "docs/goals/variant-engine-reference-study/state.yaml"
+      verify:
+        - "node --test tests/static/legal-move-perft.mjs"
+        - "npm run test:static"
+        - "git diff --check"
+      stop_if:
+        - "The test requires behavior changes outside tests/static/legal-move-perft.mjs."
+        - "Counts reveal ambiguous current rules that require owner product decisions."
+        - "Verification fails twice for the same unclear reason."
+      deferred_tasks:
+        - "Rule profile design doc for Strict/Casual once legal move counts are pinned."
+        - "SearchEngine interface sketch after move generator and hidden-information boundaries have more tests."
+        - "Rust/WASM exploration only in a later tranche with explicit owner approval."
+  - id: T003
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: default
+    objective: "Add a focused static test file that records perft-style legal move and drop-count invariants for Pitfall Shogi's current move generator."
+    allowed_files:
+      - "tests/static/legal-move-perft.mjs"
+      - "docs/goals/variant-engine-reference-study/state.yaml"
+    verify:
+      - "node --test tests/static/legal-move-perft.mjs"
+      - "npm run test:static"
+      - "git diff --check"
+    stop_if:
+      - "The test requires behavior changes outside tests/static/legal-move-perft.mjs."
+      - "Counts reveal ambiguous current rules that require owner product decisions."
+      - "Verification fails twice for the same unclear reason."
+    receipt:
+      result: done
+      changed_files:
+        - "tests/static/legal-move-perft.mjs"
+        - "docs/goals/variant-engine-reference-study/state.yaml"
+      commands:
+        - cmd: "node --test tests/static/legal-move-perft.mjs"
+          status: pass
+        - cmd: "npm run test:static"
+          status: pass
+        - cmd: "git diff --check"
+          status: pass
+      summary: "Added a Haitaka-inspired perft-style static test slice for the current TypeScript move generator: initial one-ply counts, initial two-ply move-only count, hand-drop restrictions, and slider blocker/capture behavior. No production code, Rust, WASM, external engine code, or hidden-information behavior changed."
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit whether the current tranche is complete against the original reference-study outcome."
+    inputs:
+      - "All done task receipts"
+      - "Last verification"
+      - "Current dirty diff"
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work is still queued or active."
+    expected_output:
+      - "complete | not_complete"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: complete
+      summary: "The current tranche is complete: references were mapped into repo-grounded design implications, the first safe implementation slice was selected, and the legal-move/perft test-hardening slice was implemented and verified. The tranche explicitly deferred YaneuraOu code reuse, Rust/WASM adoption, NNUE, and SearchEngine API work to later boards."
+
+checks:
+  dirty_fingerprint: unknown
+  last_verification:
+    result: pass
+    task: T003
+    commands:
+      - "node --test tests/static/legal-move-perft.mjs"
+      - "npm run test:static"
+      - "git diff --check"
