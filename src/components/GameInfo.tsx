@@ -42,10 +42,10 @@ export default function GameInfo({ state, botPhase, language = 'ja' }: Props) {
   })();
 
   return (
-    <div className="flex flex-col items-center gap-3 py-3">
+    <div className="flex flex-col items-center gap-3 py-2">
       <div className="flex items-center gap-3">
         <div className={`
-          px-3 py-1 rounded-full text-sm font-bold
+          px-3 py-1 rounded-full text-sm font-black
           ${currentPlayer === 'sente'
             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
             : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
@@ -53,15 +53,15 @@ export default function GameInfo({ state, botPhase, language = 'ja' }: Props) {
         `}>
           {playerLabel}
         </div>
-        <div className="text-gray-400 text-sm">
+        <div className="text-amber-100/65 text-sm font-bold">
           {language === 'ja' ? `第${turn}手` : `Turn ${turn}`}
         </div>
       </div>
 
       <div className={`
-        px-4 py-2 text-center text-sm font-bold leading-relaxed rounded-lg
+        px-4 py-2 text-center text-sm font-black leading-relaxed rounded-lg
         ${phase.type === 'PITFALL_PLACEMENT'
-          ? 'bg-fuchsia-500/15 text-fuchsia-100 ring-1 ring-fuchsia-300/35'
+          ? 'bg-red-500/18 text-red-50 ring-1 ring-red-300/40'
           : phase.type === 'GAME_OVER'
           ? 'bg-gradient-to-r from-yellow-600/30 to-orange-600/30 text-yellow-200 font-bold text-base'
           : 'bg-white/5 text-gray-300'

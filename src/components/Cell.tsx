@@ -52,27 +52,27 @@ export default function Cell({
     <div
       onClick={onClick}
       className={`
-        group relative ${compact ? 'h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10' : 'h-11 w-11 sm:h-12 sm:w-12 lg:h-14 lg:w-14'}
+        board-cell group relative ${compact ? 'h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10' : 'h-9 w-9 sm:h-12 sm:w-12 lg:h-14 lg:w-14'}
         flex items-center justify-center
-        border border-amber-900/40
+        border border-[#6f3715]/65
         cursor-pointer
         transition duration-150
-        ${isDark ? 'bg-amber-800/20' : 'bg-amber-700/10'}
-        ${isSelected ? 'bg-yellow-500/30 ring-2 ring-yellow-400 ring-inset' : ''}
-        ${isLegalMove ? 'bg-emerald-500/25' : ''}
+        ${isDark ? 'bg-[#b06b31]' : 'bg-[#c37b39]'}
+        ${isSelected ? 'ring-2 ring-yellow-200 ring-inset shadow-[inset_0_0_24px_rgba(250,204,21,0.42)]' : ''}
+        ${isLegalMove ? 'legal-move-cell' : ''}
         ${isCheckKing ? 'check-king-pulse ring-2 ring-red-500 ring-inset z-10' : ''}
         ${isReviewMode && reviewTrapState === 'hit' ? 'bg-fuchsia-950/80 ring-2 ring-fuchsia-400/80 ring-inset shadow-[inset_0_0_20px_rgba(217,70,239,0.4)]' : ''}
         ${isReviewMode && reviewTrapState === 'miss' ? 'bg-indigo-950/70 ring-2 ring-indigo-400/70 ring-inset shadow-[inset_0_0_20px_rgba(129,140,248,0.3)]' : ''}
-        ${isPitfallDraft ? 'bg-fuchsia-500/30 ring-2 ring-fuchsia-200 ring-inset shadow-[inset_0_0_28px_rgba(217,70,239,0.32)]' : ''}
-        ${isTrapBurst ? 'trap-burst-cell bg-red-500/40 ring-4 ring-red-200 ring-inset' : ''}
+        ${isPitfallDraft ? 'trap-candidate-cell ring-2 ring-red-100 ring-inset' : ''}
+        ${isTrapBurst ? 'trap-burst-cell bg-red-500/45 ring-4 ring-red-100 ring-inset' : ''}
         ${isMissedTrapReveal ? 'trap-miss-smoke bg-violet-500/35 ring-4 ring-violet-100/80 ring-inset' : ''}
-        ${isPitfallPlacement && !isPitfallBlocked ? 'hover:bg-fuchsia-500/20 hover:ring-2 hover:ring-fuchsia-300/50 hover:ring-inset hover:shadow-[inset_0_0_24px_rgba(190,24,93,0.22)]' : 'hover:bg-amber-500/20'}
+        ${isPitfallPlacement && !isPitfallBlocked ? 'hover:ring-2 hover:ring-red-300/70 hover:ring-inset hover:shadow-[inset_0_0_24px_rgba(248,113,113,0.32)]' : 'hover:bg-amber-500/20'}
         ${isPitfallBlocked && isPitfallPlacement ? 'cursor-not-allowed bg-stone-950/30' : ''}
       `}
     >
       {isPitfallPlacement && !isPitfall && !isPitfallBlocked && (
         <div className="pointer-events-none absolute inset-1 opacity-0 transition group-hover:opacity-100">
-          <div className="h-full w-full rounded-sm border border-fuchsia-300/30 bg-fuchsia-500/10" />
+          <div className="h-full w-full rounded-sm border border-red-300/40 bg-red-500/10" />
         </div>
       )}
 
@@ -84,21 +84,22 @@ export default function Cell({
 
       {/* 合法移動先マーカー */}
       {isLegalMove && !cell && (
-        <div className="absolute w-3 h-3 rounded-full bg-emerald-400/50" />
+        <div className="legal-move-dot absolute rounded-full" />
       )}
 
       {/* 落とし穴マーカー */}
       {(isPitfall || isPitfallDraft) && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className={`flex -rotate-6 items-center justify-center rounded-sm border font-black shadow-[0_0_18px_rgba(190,24,93,0.45)] backdrop-blur-[1px] ${
+          <div className={`trap-marker flex -rotate-6 items-center justify-center rounded-sm border font-black backdrop-blur-[1px] ${
             compact ? 'h-6 w-7 text-[10px]' : 'h-8 w-10 text-[11px] sm:h-9 sm:w-12 sm:text-xs'
           } ${
             isPitfallDraft
-              ? 'border-fuchsia-100 bg-gradient-to-br from-fuchsia-400/80 to-red-500/70 text-white'
-              : 'border-fuchsia-200/55 bg-gradient-to-br from-fuchsia-700/55 to-red-700/45 text-fuchsia-50'
+              ? 'border-red-100 bg-gradient-to-br from-red-500/90 to-orange-600/80 text-white'
+              : 'border-red-200/65 bg-gradient-to-br from-red-800/70 to-stone-950/55 text-red-50'
           }`}>
             {isPitfallDraft ? '候補' : '罠'}
           </div>
+          {isPitfallDraft && <div className="trap-crosshair" aria-hidden="true" />}
         </div>
       )}
 
@@ -138,7 +139,7 @@ export default function Cell({
 
       {/* 合法移動先（駒がある場合の取れるマーカー） */}
       {isLegalMove && cell && (
-        <div className="absolute inset-0 ring-2 ring-red-400/60 ring-inset rounded-sm pointer-events-none" />
+        <div className="absolute inset-0 rounded-sm ring-2 ring-emerald-200/80 ring-inset pointer-events-none" />
       )}
     </div>
   );

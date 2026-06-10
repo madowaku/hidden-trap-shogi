@@ -22,7 +22,160 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Trebuchet MS", "Yu Gothic", "Hiragino Sans", system-ui, sans-serif;
+}
+
+.steam-arena {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.28) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(135deg, #120e0a 0%, #1b1109 38%, #090909 100%);
+  background-size: 42px 42px, 42px 42px, auto;
+}
+
+.arena-topbar,
+.coach-panel,
+.command-panel {
+  border-color: rgba(245, 158, 11, 0.24);
+  background:
+    linear-gradient(180deg, rgba(24, 24, 23, 0.94), rgba(12, 10, 8, 0.94)),
+    repeating-linear-gradient(90deg, rgba(251, 191, 36, 0.04) 0 1px, transparent 1px 18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 38px rgba(0, 0, 0, 0.32);
+}
+
+.arena-board-stage {
+  background:
+    linear-gradient(180deg, rgba(70, 18, 18, 0.34), rgba(15, 10, 8, 0.9)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 16px);
+}
+
+.coach-panel {
+  min-height: 0;
+}
+
+.vertical-logo {
+  writing-mode: horizontal-tb;
+}
+
+.mascot-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(127, 29, 29, 0.2), rgba(0, 0, 0, 0.16)),
+    repeating-linear-gradient(0deg, rgba(245, 158, 11, 0.06) 0 1px, transparent 1px 18px);
+}
+
+.board-frame {
+  background:
+    linear-gradient(90deg, rgba(72, 38, 18, 0.95), rgba(115, 62, 27, 0.98), rgba(72, 38, 18, 0.95));
+  padding: 10px;
+}
+
+.board-cell {
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 232, 174, 0.2),
+    inset -1px -1px 0 rgba(76, 35, 14, 0.42);
+}
+
+.legal-move-cell {
+  background: #b97836;
+  box-shadow:
+    inset 0 0 0 2px rgba(52, 211, 153, 0.58),
+    inset 0 0 22px rgba(16, 185, 129, 0.24);
+}
+
+.legal-move-dot {
+  width: 34%;
+  height: 34%;
+  border: 2px solid rgba(209, 250, 229, 0.92);
+  background: rgba(5, 150, 105, 0.52);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.72);
+}
+
+.trap-candidate-cell {
+  box-shadow:
+    inset 0 0 0 2px rgba(254, 202, 202, 0.74),
+    inset 0 0 28px rgba(220, 38, 38, 0.44),
+    0 0 20px rgba(248, 113, 113, 0.22);
+}
+
+.trap-marker {
+  box-shadow: 0 0 20px rgba(248, 113, 113, 0.55);
+}
+
+.trap-crosshair {
+  position: absolute;
+  width: 54%;
+  height: 54%;
+  border: 2px solid rgba(254, 226, 226, 0.92);
+  border-radius: 999px;
+  box-shadow: 0 0 16px rgba(248, 113, 113, 0.7);
+}
+
+.trap-crosshair::before,
+.trap-crosshair::after {
+  content: "";
+  position: absolute;
+  background: rgba(254, 226, 226, 0.92);
+}
+
+.trap-crosshair::before {
+  left: 50%;
+  top: -7px;
+  width: 2px;
+  height: calc(100% + 14px);
+  transform: translateX(-50%);
+}
+
+.trap-crosshair::after {
+  left: -7px;
+  top: 50%;
+  width: calc(100% + 14px);
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.piece-tile {
+  background:
+    linear-gradient(180deg, #f4c879 0%, #c98b43 72%, #9a612b 100%);
+  clip-path: polygon(50% 0, 90% 18%, 84% 100%, 16% 100%, 10% 18%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 249, 220, 0.38),
+    inset 0 -2px 0 rgba(91, 43, 16, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.34);
+}
+
+.hand-stand {
+  background: linear-gradient(180deg, rgba(35, 24, 16, 0.86), rgba(18, 14, 12, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.trap-command {
+  border-color: rgba(248, 113, 113, 0.38);
+  background:
+    linear-gradient(180deg, rgba(127, 29, 29, 0.24), rgba(69, 10, 10, 0.18)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.trap-confirm-button {
+  border: 1px solid rgba(254, 202, 202, 0.5);
+  background: linear-gradient(180deg, #dc2626, #7f1d1d);
+  color: #fff7ed;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 18px rgba(220, 38, 38, 0.24);
+}
+
+.trap-confirm-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ef4444, #991b1b);
+}
+
+.parchment-panel {
+  border-color: rgba(87, 54, 22, 0.36);
+  background:
+    linear-gradient(180deg, rgba(255, 237, 184, 0.96), rgba(214, 177, 111, 0.96)),
+    repeating-linear-gradient(0deg, rgba(87, 54, 22, 0.055) 0 1px, transparent 1px 12px);
 }
 
 @keyframes trap-burst-flash {

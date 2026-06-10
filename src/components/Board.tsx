@@ -60,7 +60,7 @@ export default function Board({
   return (
     <div className="relative flex flex-col items-center">
       {phaseType === 'PITFALL_PLACEMENT' && (
-        <div className={`pointer-events-none absolute left-1/2 z-20 -translate-x-1/2 rounded-md border border-fuchsia-300/45 bg-[#2b1025]/90 font-black text-fuchsia-100 shadow-lg shadow-fuchsia-950/50 ${
+        <div className={`pointer-events-none absolute left-1/2 z-20 -translate-x-1/2 rounded-md border border-red-200/55 bg-[#4b1110]/95 font-black text-amber-50 shadow-lg shadow-red-950/50 ${
           compact ? '-top-2 px-3 py-1 text-xs' : '-top-3 px-4 py-2 text-sm'
         }`}>
           罠を仕掛けるマスを選択
@@ -72,7 +72,7 @@ export default function Board({
         {colLabels.map((label, i) => (
           <div
             key={`col-${i}`}
-            className={`${compact ? 'w-8 sm:w-9 lg:w-10' : 'w-11 sm:w-12 lg:w-14'} text-center font-mono text-xs text-amber-400/60`}
+            className={`${compact ? 'w-8 sm:w-9 lg:w-10' : 'w-9 sm:w-12 lg:w-14'} text-center font-serif text-sm font-black text-amber-300/80`}
           >
             {label}
           </div>
@@ -81,7 +81,7 @@ export default function Board({
 
       <div className="flex">
         {/* 盤面 */}
-        <div className="border-2 border-amber-700/70 bg-amber-950/30 shadow-2xl shadow-black/40 backdrop-blur-sm">
+        <div className="board-frame border-2 border-amber-800/80 shadow-2xl shadow-black/50">
           {displayRows.map((row) => (
             <div key={row} className="flex">
               {displayCols.map((col) => {
@@ -131,7 +131,7 @@ export default function Board({
           {rowLabels.map((label, i) => (
             <div
               key={`row-${i}`}
-              className={`${compact ? 'h-8 sm:h-9 lg:h-10' : 'h-11 sm:h-12 lg:h-14'} flex items-center text-xs text-amber-400/60`}
+              className={`${compact ? 'h-8 sm:h-9 lg:h-10' : 'h-9 sm:h-12 lg:h-14'} flex items-center font-serif text-sm font-black text-amber-300/80`}
             >
               {label}
             </div>

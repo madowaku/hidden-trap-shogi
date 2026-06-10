@@ -466,6 +466,7 @@ export default function Home() {
   const [showKnownIssues, setShowKnownIssues] = useState(false);
   const [showResignConfirm, setShowResignConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isCoachCollapsed, setIsCoachCollapsed] = useState(false);
   const [isOnlineMode, setIsOnlineMode] = useState(false);
   const [onlineRoomId, setOnlineRoomId] = useState('test-room');
   const [onlinePitfallDraft, setOnlinePitfallDraft] = useState<Position | null>(null);
@@ -1091,22 +1092,30 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#17110b] text-stone-100">
-      <div className={`mx-auto flex w-full max-w-[960px] flex-col ${
-        isOnlineMode ? 'gap-1.5 px-2 py-1 sm:px-3' : 'gap-2 px-3 py-1.5 sm:px-4'
+    <main className="steam-arena min-h-screen overflow-x-hidden text-stone-100">
+      <div className={`mx-auto flex w-full max-w-[1360px] flex-col ${
+        isOnlineMode ? 'gap-1.5 px-2 py-1 sm:px-3' : 'gap-2 px-3 py-2 sm:px-4'
       }`}>
         <div className={`rounded-md border border-red-300/35 bg-red-500/12 px-3 py-2 text-sm font-bold text-red-50 md:hidden ${showStartScreen ? 'hidden' : ''}`}>
           {copy.mobileWarning}
         </div>
 
-        <header className={`flex flex-col border-b border-amber-500/20 md:flex-row md:items-center md:justify-between ${
-          isOnlineMode ? 'gap-1 pb-1' : 'gap-1 pb-1.5'
+        <header className={`arena-topbar flex flex-col md:flex-row md:items-center md:justify-between ${
+          isOnlineMode ? 'gap-1 px-2 py-1' : 'gap-2 px-3 py-2'
         } ${showStartScreen ? 'hidden' : ''}`}>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-md border border-amber-200/20 bg-amber-300/10 px-2 py-1 text-[11px] font-black text-amber-50">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="mr-1 hidden min-w-[176px] flex-col leading-none sm:flex">
+              <span className="font-serif text-xl font-black uppercase tracking-[0.04em] text-amber-100">
+                Pitfall Shogi
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-[0.32em] text-red-300/90">
+                Hidden Trap Shogi
+              </span>
+            </div>
+            <span className="rounded-md border border-amber-200/30 bg-amber-300/12 px-2.5 py-1 text-[11px] font-black text-amber-50 shadow-inner shadow-black/20">
               {copy.matchTurnLabel}: {formatPlayerLabel(activeCurrentPlayer, language)}
             </span>
-            <span className="rounded-md border border-sky-200/20 bg-sky-300/10 px-2 py-1 text-[11px] font-black text-sky-50">
+            <span className="rounded-md border border-red-200/35 bg-red-500/16 px-2.5 py-1 text-[11px] font-black text-red-50 shadow-inner shadow-black/20">
               {copy.matchPhaseLabel}: {formatPhaseLabel(activePhase, language)}
             </span>
             {isCheckAlert && (
@@ -1121,7 +1130,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1.5">
             <button
               type="button"
               onClick={() => setShowResignConfirm(true)}
@@ -1137,7 +1146,7 @@ export default function Home() {
             <button
               type="button"
               onClick={openHelpTutorial}
-              className="h-8 px-2.5 text-[11px] rounded-md border border-fuchsia-300/35 bg-fuchsia-300/10 font-bold text-fuchsia-100 transition hover:bg-fuchsia-300/20"
+              className="h-8 px-2.5 text-[11px] rounded-md border border-amber-300/35 bg-amber-300/10 font-bold text-amber-100 transition hover:bg-amber-300/20"
             >
               {copy.help}
             </button>
@@ -1332,11 +1341,11 @@ export default function Home() {
                       className={`min-h-16 rounded-lg border p-3 text-left transition ${
                         gameMode === option.value
                           ? option.value === 'pvp'
-                            ? 'border-amber-200 bg-amber-200 text-stone-950'
-                            : 'border-sky-200 bg-sky-200 text-stone-950'
+                            ? 'border-amber-200 bg-amber-500/85 text-stone-950 shadow-[0_0_22px_rgba(245,158,11,0.22)]'
+                            : 'border-emerald-200 bg-emerald-400/85 text-stone-950 shadow-[0_0_22px_rgba(16,185,129,0.22)]'
                           : option.value === 'pvp'
                             ? 'border-amber-200/20 bg-white/[0.04] text-amber-50 hover:bg-white/10'
-                            : 'border-sky-200/20 bg-white/[0.04] text-sky-50 hover:bg-white/10'
+                            : 'border-emerald-200/20 bg-white/[0.04] text-emerald-50 hover:bg-white/10'
                       }`}
                     >
                       <span className="flex items-center justify-between gap-2">
@@ -1425,17 +1434,17 @@ export default function Home() {
               </div>
 
               {gameMode === 'pvbot' && (
-                <div className="mt-2 rounded-md border border-sky-200/20 bg-sky-400/8 p-2">
+                <div className="mt-2 rounded-md border border-emerald-200/20 bg-emerald-400/8 p-2">
                   <div className="mb-1.5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                      <div className="text-xs font-black uppercase tracking-[0.22em] text-sky-200/75">
+                      <div className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200/75">
                         {copy.botLevelScopeLabel}
                       </div>
-                      <div className="text-sm font-bold text-sky-50">
+                      <div className="text-sm font-bold text-emerald-50">
                         {copy.botLevelHelp}
                       </div>
                     </div>
-                    <div className="text-xs font-bold text-sky-100/70">
+                    <div className="text-xs font-bold text-emerald-100/70">
                       {copy.botSummary}
                     </div>
                   </div>
@@ -1448,8 +1457,8 @@ export default function Home() {
                         onClick={() => resetWithSettings('pvbot', casualMode, option.value)}
                         className={`min-h-10 rounded-md border px-3 py-1 text-left transition ${
                           botLevel === option.value
-                            ? 'border-sky-200 bg-sky-200 text-[#06111f]'
-                            : 'border-sky-200/25 bg-white/[0.04] text-sky-50 hover:bg-white/10'
+                            ? 'border-emerald-200 bg-emerald-300 text-[#06111f]'
+                            : 'border-emerald-200/25 bg-white/[0.04] text-emerald-50 hover:bg-white/10'
                         }`}
                       >
                         <span className="block text-sm font-black leading-4">{option.label}</span>
@@ -1460,17 +1469,17 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="mt-2 rounded-md border border-violet-200/20 bg-violet-400/8 p-2">
+              <div className="parchment-panel mt-2 rounded-md border p-2 text-stone-950">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <div className="text-xs font-black uppercase tracking-[0.22em] text-violet-200/75">
+                    <div className="text-xs font-black uppercase tracking-[0.22em] text-red-900/65">
                       Casual
                     </div>
-                    <div className="text-sm font-bold text-violet-50">
+                    <div className="text-sm font-bold text-stone-950">
                       {copy.casualDetail}
                     </div>
                   </div>
-                  <div className="text-xs font-bold text-violet-100/70">
+                  <div className="text-xs font-bold text-stone-700">
                     {activeCasualOption.label[language]}
                   </div>
                 </div>
@@ -1483,8 +1492,8 @@ export default function Home() {
                       onClick={() => resetWithSettings(gameMode, option.value, botLevel)}
                       className={`min-h-12 rounded-md border px-3 py-1.5 text-left transition ${
                         casualMode === option.value
-                          ? 'border-violet-200 bg-violet-200 text-[#1a1024]'
-                          : 'border-violet-200/25 bg-white/[0.04] text-violet-50 hover:bg-white/10'
+                          ? 'border-red-900/25 bg-red-800 text-amber-50'
+                          : 'border-stone-900/20 bg-white/25 text-stone-900 hover:bg-white/40'
                       }`}
                     >
                       <span className="block text-sm font-black leading-4">{option.label[language]}</span>
@@ -1608,21 +1617,21 @@ export default function Home() {
         )}
 
         {showTutorial && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#08040b]/80 px-4 backdrop-blur-md">
-            <div className="w-full max-w-lg rounded-lg border border-fuchsia-200/30 bg-[#160d18] p-5 shadow-2xl shadow-black/70">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#08040b]/82 px-4 backdrop-blur-md">
+            <div className="parchment-panel w-full max-w-lg rounded-lg border p-5 text-stone-950 shadow-2xl shadow-black/70">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.26em] text-fuchsia-200/75">
+                  <p className="text-xs font-black uppercase tracking-[0.26em] text-red-900/65">
                     Mini tutorial
                   </p>
-                  <h2 className="mt-2 text-2xl font-black text-fuchsia-50">
+                  <h2 className="mt-2 font-serif text-3xl font-black text-stone-950">
                     {copy.rules}
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={closeFirstTurnTutorial}
-                  className="h-9 rounded-md border border-white/15 px-3 text-sm font-bold text-stone-100 transition hover:bg-white/10"
+                  className="h-9 rounded-md border border-stone-900/20 bg-stone-950/5 px-3 text-sm font-bold text-stone-950 transition hover:bg-stone-950/10"
                 >
                   {copy.close}
                 </button>
@@ -1636,16 +1645,16 @@ export default function Home() {
                 {tutorialSteps.map((step, index) => (
                   <div
                     key={step}
-                    className="grid grid-cols-[2.5rem_1fr] items-center gap-3 rounded-md border border-fuchsia-200/15 bg-white/[0.04] p-3"
+                    className="grid grid-cols-[2.5rem_1fr] items-center gap-3 rounded-md border border-stone-900/12 bg-white/25 p-3"
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-fuchsia-200 text-sm font-black text-[#1b0b1d]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-red-800 text-sm font-black text-amber-50 shadow-inner shadow-black/25">
                       {index + 1}
                     </div>
                     <div>
-                      <div className="text-sm font-black leading-5 text-fuchsia-50">
+                      <div className="text-sm font-black leading-5 text-stone-950">
                         {step}
                       </div>
-                      <div className="mt-0.5 text-xs font-bold leading-5 text-fuchsia-50/70">
+                      <div className="mt-0.5 text-xs font-bold leading-5 text-stone-800">
                         {tutorialDetails[index]}
                       </div>
                     </div>
@@ -1655,7 +1664,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={closeFirstTurnTutorial}
-                className="mt-5 h-10 w-full rounded-md border border-fuchsia-200/25 bg-fuchsia-100/10 text-sm font-black text-fuchsia-50 transition hover:bg-fuchsia-100/20"
+                className="mt-5 h-10 w-full rounded-md border border-red-900/25 bg-red-800 text-sm font-black text-amber-50 transition hover:bg-red-700"
               >
                 {copy.skip}
               </button>
@@ -1855,12 +1864,12 @@ export default function Home() {
         )}
 
         {!showStartScreen && !isOnlineMode && gameMode === 'pvbot' && (
-          <div className="flex flex-col gap-2 rounded-lg border border-sky-300/20 bg-sky-400/8 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="arena-topbar flex flex-col gap-2 rounded-lg border px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="text-xs font-black uppercase tracking-[0.22em] text-sky-200/75">
+              <div className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200/75">
                 {copy.botLevelScopeLabel}
               </div>
-              <div className="text-sm font-bold text-sky-50">
+              <div className="text-sm font-bold text-stone-50">
                 {copy.botLevelHelp}
               </div>
             </div>
@@ -1873,8 +1882,8 @@ export default function Home() {
                   onClick={() => resetWithSettings('pvbot', casualMode, option.value)}
                   className={`min-h-10 rounded-md border px-3 py-1 text-left transition ${
                     botLevel === option.value
-                      ? 'border-sky-200 bg-sky-200 text-[#06111f]'
-                      : 'border-sky-200/25 bg-white/[0.04] text-sky-50 hover:bg-white/10'
+                      ? 'border-emerald-200 bg-emerald-300 text-[#06111f]'
+                      : 'border-emerald-200/25 bg-white/[0.04] text-emerald-50 hover:bg-white/10'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-2 text-sm font-black">
@@ -2023,10 +2032,64 @@ export default function Home() {
         ) : (
         <section className={`grid flex-1 ${isOnlineMode ? 'gap-2' : 'gap-3'} ${
           isOnlineMode
-            ? 'md:grid-cols-[minmax(380px,1fr)_260px]'
-            : 'md:grid-cols-[minmax(500px,1fr)_300px]'
+            ? 'md:grid-cols-[minmax(72px,160px)_minmax(380px,1fr)_260px]'
+            : isCoachCollapsed
+              ? 'md:grid-cols-[76px_minmax(540px,1fr)_300px] xl:grid-cols-[76px_minmax(620px,1fr)_320px]'
+              : 'md:grid-cols-[190px_minmax(540px,1fr)_300px] xl:grid-cols-[220px_minmax(620px,1fr)_320px]'
         }`}>
-          <div className={`relative flex flex-col items-center justify-center rounded-lg border shadow-2xl shadow-black/30 ${
+          <aside className={`coach-panel hidden md:flex ${isCoachCollapsed ? 'items-center px-2 py-3' : 'px-3 py-3'} flex-col gap-3`}>
+            <button
+              type="button"
+              onClick={() => setIsCoachCollapsed((current) => !current)}
+              aria-expanded={!isCoachCollapsed}
+              className="h-8 w-full rounded-md border border-amber-200/25 bg-black/25 px-2 text-[11px] font-black uppercase tracking-[0.16em] text-amber-100 transition hover:bg-amber-200/10"
+            >
+              {isCoachCollapsed ? 'Guide' : language === 'ja' ? 'ガイドを畳む' : 'Collapse guide'}
+            </button>
+            <div className={`w-full ${isCoachCollapsed ? 'flex flex-col items-center gap-2' : ''}`}>
+              <div className={isCoachCollapsed ? 'vertical-logo text-center' : ''}>
+                <div className="font-serif text-2xl font-black uppercase leading-none text-amber-100">
+                  {isCoachCollapsed ? 'PS' : 'Pitfall Shogi'}
+                </div>
+                {!isCoachCollapsed && (
+                  <div className="mt-1 text-[10px] font-black uppercase tracking-[0.28em] text-red-300/90">
+                    Hidden Trap Shogi
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={`mascot-stage ${isCoachCollapsed ? 'h-20 w-14' : 'h-48 w-full'}`} aria-hidden="true">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="./mascots/kuno-usa-ui.png"
+                alt=""
+                width={331}
+                height={512}
+                className={`${isCoachCollapsed ? 'h-20' : 'h-44'} w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.45)]`}
+              />
+            </div>
+            {!isCoachCollapsed && (
+              <>
+                <div className="w-full rounded-md border border-red-300/25 bg-red-500/10 px-3 py-2">
+                  <div className="text-[10px] font-black uppercase tracking-[0.22em] text-red-200/80">
+                    Trap Tip
+                  </div>
+                  <div className="mt-1 text-sm font-black leading-5 text-stone-50">
+                    {language === 'ja'
+                      ? '取れる駒ほど、罠かもしれない。'
+                      : 'The tastier the capture, the trap-lier it gets.'}
+                  </div>
+                </div>
+                <div className="w-full rounded-md border border-amber-200/20 bg-black/22 px-3 py-2 text-xs font-bold leading-5 text-amber-50/80">
+                  {language === 'ja'
+                    ? '盤面を最優先。罠候補を決めてから、相手が欲しがる一手を誘いましょう。'
+                    : 'Keep your eyes on the board. Place a trap, then bait the move they want.'}
+                </div>
+              </>
+            )}
+          </aside>
+
+          <div className={`arena-board-stage relative flex flex-col items-center justify-center rounded-lg border shadow-2xl shadow-black/30 ${
             isOnlineMode ? 'gap-1 p-1 sm:p-1.5' : 'gap-2 p-2 sm:p-2.5'
           } ${
             trapReactionKind === 'player_trapped'
@@ -2112,7 +2175,7 @@ export default function Home() {
           </div>
 
           <aside className={`flex flex-col ${isOnlineMode ? 'gap-2' : 'gap-3'}`}>
-            <div className={`rounded-lg border border-white/10 bg-white/[0.06] ${isOnlineMode ? 'p-2.5' : 'p-3'}`}>
+            <div className={`command-panel rounded-lg border ${isOnlineMode ? 'p-2.5' : 'p-3'}`}>
               <GameInfo
                 state={{ currentPlayer: activeCurrentPlayer, turn: activeTurn, phase: activePhase }}
                 botPhase={activeBotPhase}
@@ -2147,7 +2210,7 @@ export default function Home() {
                 </div>
               )}
               {isPitfallSetup && (
-                <div className={`${isOnlineMode ? 'mt-2 p-2' : 'mt-3 p-3'} rounded-lg border border-fuchsia-300/30 bg-fuchsia-500/10`}>
+                <div className={`${isOnlineMode ? 'mt-2 p-2' : 'mt-3 p-3'} trap-command rounded-lg border`}>
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className={`${isOnlineMode ? 'text-[10px] tracking-[0.18em]' : 'text-xs tracking-[0.22em]'} font-black uppercase text-fuchsia-200/75`}>
@@ -2179,7 +2242,7 @@ export default function Home() {
                     type="button"
                     onClick={confirmPitfall}
                     disabled={!activePitfallDraft}
-                    className={`${isOnlineMode ? 'mt-2 h-9 text-xs' : 'mt-3 h-11 text-sm'} w-full rounded-md bg-fuchsia-200 font-black text-[#21101f] transition hover:bg-white disabled:cursor-not-allowed disabled:bg-stone-500 disabled:text-stone-300`}
+                    className={`${isOnlineMode ? 'mt-2 h-9 text-xs' : 'mt-3 h-11 text-sm'} trap-confirm-button w-full rounded-md font-black transition disabled:cursor-not-allowed disabled:opacity-45`}
                   >
                     {copy.confirmTrap}
                   </button>
@@ -2220,7 +2283,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className={`rounded-lg border border-white/10 bg-white/[0.06] ${isOnlineMode ? 'p-2.5' : 'p-3'}`}>
+            <div className={`command-panel rounded-lg border ${isOnlineMode ? 'p-2.5' : 'p-3'}`}>
               <h2 className={`${isOnlineMode ? 'mb-2 text-xs' : 'mb-3 text-sm'} font-black text-amber-100`}>{copy.gameLog}</h2>
               <GameLog
                 log={activeLog}
@@ -2232,9 +2295,9 @@ export default function Home() {
             </div>
 
             {activePhase.type === 'GAME_OVER' && trapHistory.length > 0 && (
-              <div className="rounded-lg border border-fuchsia-200/20 bg-fuchsia-500/8 p-3">
+              <div className="parchment-panel rounded-lg border p-3 text-stone-900">
                 <div className="flex flex-col gap-2">
-                  <h2 className="text-sm font-black text-fuchsia-100">{copy.trapReview}</h2>
+                  <h2 className="text-sm font-black text-stone-950">{copy.trapReview}</h2>
                   <NinjaGuide language={language} variant="review" className="py-1" />
                 </div>
 

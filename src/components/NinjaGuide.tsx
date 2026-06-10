@@ -102,11 +102,11 @@ const GUIDE_COPY: Record<NinjaGuideVariant, Record<Language, {
 
 const VARIANT_STYLE: Record<NinjaGuideVariant, string> = {
   title: 'border-amber-200/25 bg-amber-100/[0.06] text-amber-50',
-  help: 'border-fuchsia-200/25 bg-fuchsia-100/[0.06] text-fuchsia-50',
+  help: 'border-stone-900/15 bg-white/25 text-stone-950',
   trapHit: 'border-red-100/45 bg-stone-950/18 text-stone-950',
   playerTrapped: 'border-fuchsia-100/45 bg-stone-950/18 text-stone-950',
   opponentTrapped: 'border-amber-100/55 bg-stone-950/18 text-stone-950',
-  review: 'border-fuchsia-200/20 bg-white/[0.04] text-fuchsia-50',
+  review: 'border-stone-900/15 bg-white/25 text-stone-950',
   check: 'border-red-500 bg-red-500/20 text-red-50 check-king-pulse',
 };
 

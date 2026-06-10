@@ -21,7 +21,7 @@ export default function Piece({ piece, isSelected, onClick, size = 'normal', ori
       : PIECE_KANJI[piece.kind];
 
   const isPromoted = piece.kind.startsWith('promoted_');
-  const sizeClass = size === 'small' ? 'w-5 h-6 text-[11px]' : 'w-9 h-10 text-base';
+  const sizeClass = size === 'small' ? 'w-5 h-6 text-[11px]' : 'w-8 h-9 text-sm sm:w-9 sm:h-10 sm:text-base';
 
   return (
     <div
@@ -32,7 +32,7 @@ export default function Piece({ piece, isSelected, onClick, size = 'normal', ori
         font-bold cursor-pointer select-none
         transition-all duration-150
         ${shouldRotate ? 'rotate-180' : ''}
-        ${isPromoted ? 'text-red-400' : isGote ? 'text-blue-300' : 'text-amber-100'}
+        ${isPromoted ? 'text-red-800' : isGote ? 'text-sky-950' : 'text-red-950'}
         ${isSelected ? 'ring-2 ring-yellow-400 scale-110' : ''}
       `}
       title={`${piece.owner === 'sente' ? '先手' : '後手'} ${kanji}`}
@@ -40,13 +40,12 @@ export default function Piece({ piece, isSelected, onClick, size = 'normal', ori
       <span className={`
         inline-flex items-center justify-center
         ${sizeClass}
-        border rounded-sm
+        piece-tile border rounded-sm
         ${isGote
-          ? 'border-blue-400/60 bg-blue-950/50'
-          : 'border-amber-400/60 bg-amber-950/50'
+          ? 'border-sky-900/50'
+          : 'border-amber-900/50'
         }
-        ${isPromoted ? 'border-red-400/60' : ''}
-        shadow-sm
+        ${isPromoted ? 'border-red-700/70' : ''}
       `}>
         {kanji}
       </span>

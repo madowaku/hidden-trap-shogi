@@ -31,18 +31,18 @@ export default function PieceStand({
 
   return (
     <div className={`
-      flex flex-col gap-1 rounded-lg ${compact ? 'min-w-[64px] px-2 py-0.5' : 'min-w-[80px] px-3 py-2'}
+      hand-stand flex flex-col gap-1 rounded-lg ${compact ? 'min-w-[64px] px-2 py-0.5' : 'min-w-[80px] px-3 py-2'}
       ${player === 'sente'
-        ? 'bg-amber-950/40 border border-amber-700/30'
-        : 'bg-blue-950/40 border border-blue-700/30'
+        ? 'border border-amber-700/35'
+        : 'border border-sky-700/35'
       }
     `}>
-      <div className={`${compact ? 'text-[10px]' : 'text-xs'} font-medium ${player === 'sente' ? 'text-amber-400/70' : 'text-blue-400/70'}`}>
+      <div className={`${compact ? 'text-[10px]' : 'text-xs'} font-black ${player === 'sente' ? 'text-amber-200/80' : 'text-sky-200/80'}`}>
         {label}
       </div>
 
       {pieces.length === 0 && (
-        <div className={`${compact ? 'text-[10px]' : 'text-xs'} text-gray-500 italic`}>{language === 'ja' ? 'なし' : 'None'}</div>
+        <div className={`${compact ? 'text-[10px]' : 'text-xs'} text-stone-300/65 italic`}>{language === 'ja' ? 'なし' : 'None'}</div>
       )}
 
       <div className="flex flex-wrap gap-1">
