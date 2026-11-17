@@ -110,11 +110,11 @@ export default function Cell({
       )}
 
       {isMissedTrapReveal && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-          <div className={`trap-miss-cloud rounded-full border-4 border-violet-100/75 bg-violet-300/35 ${compact ? 'h-10 w-10' : 'h-16 w-16'}`} />
-          <div className="absolute rounded-sm border border-violet-100/70 bg-violet-700/75 px-1.5 py-0.5 text-[10px] font-black text-violet-50">
-            不発
-          </div>
+        <div
+          aria-label="不発の罠"
+          className="pointer-events-none absolute right-0 top-0 z-20 rounded-bl border-b border-l border-violet-100/80 bg-violet-950/95 px-0.5 py-px text-[9px] font-black leading-none text-violet-50 shadow-sm"
+        >
+          不発
         </div>
       )}
 

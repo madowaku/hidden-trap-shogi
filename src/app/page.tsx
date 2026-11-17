@@ -150,6 +150,9 @@ const COPY: Record<Language, {
   skip: string;
   reset: string;
   settingsLabel: string;
+  restartTitle: string;
+  restartBody: string;
+  restartProceed: string;
   selected: string;
   botLevel: string;
   botLevelScopeLabel: string;
@@ -256,6 +259,9 @@ const COPY: Record<Language, {
     skip: 'スキップ',
     reset: 'Reset',
     settingsLabel: '⋯',
+    restartTitle: '対局を最初から始めますか？',
+    restartBody: '現在の棋譜と盤面は消えます。設定の変更は新しい対局として始まります。',
+    restartProceed: '新しい対局を開始',
     selected: '選択中',
     botLevel: 'Bot level',
     botLevelScopeLabel: 'PvBot専用',
@@ -362,6 +368,9 @@ const COPY: Record<Language, {
     skip: 'Skip',
     reset: 'Reset',
     settingsLabel: 'Settings',
+    restartTitle: 'Start a new match?',
+    restartBody: 'Your current board and move history will be lost. Changing settings starts a fresh match.',
+    restartProceed: 'Start new match',
     selected: 'Selected',
     botLevel: 'Bot level',
     botLevelScopeLabel: 'Bot only',
@@ -466,6 +475,7 @@ export default function Home() {
   const [showKnownIssues, setShowKnownIssues] = useState(false);
   const [showResignConfirm, setShowResignConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [pendingMatchReset, setPendingMatchReset] = useState<{ mode: GameMode; casual: boolean; level: BotLevel } | null>(null);
   const [isCoachCollapsed, setIsCoachCollapsed] = useState(false);
   const [isOnlineMode, setIsOnlineMode] = useState(false);
   const [onlineRoomId, setOnlineRoomId] = useState('test-room');
@@ -1006,6 +1016,28 @@ export default function Home() {
     game.resetGame(nextMode, nextCasual, nextBotLevel);
   };
 
+  // 変更の意図がない再クリックは無視。対局中は明示的に確認してから開始し直す。
+  const requestMatchRestart = (
+    nextMode = gameMode,
+    nextCasual = casualMode,
+    nextBotLevel = botLevel,
+    force = false
+  ) => {
+    if (!force && nextMode === gameMode && nextCasual === casualMode && nextBotLevel === botLevel) return;
+    if (showStartScreen || state.phase.type === 'GAME_OVER') {
+      resetWithSettings(nextMode, nextCasual, nextBotLevel);
+      return;
+    }
+    setPendingMatchReset({ mode: nextMode, casual: nextCasual, level: nextBotLevel });
+  };
+
+  const confirmMatchRestart = () => {
+    if (!pendingMatchReset) return;
+    resetWithSettings(pendingMatchReset.mode, pendingMatchReset.casual, pendingMatchReset.level);
+    setPendingMatchReset(null);
+    setShowSettings(false);
+  };
+
   const openHelpTutorial = () => {
     setShowTutorial(true);
   };
@@ -1194,7 +1226,7 @@ export default function Home() {
                     <button
                       key={`settings-${option.value}`}
                       type="button"
-                      onClick={() => resetWithSettings(option.value, casualMode, botLevel)}
+                      onClick={() => requestMatchRestart(option.value, casualMode, botLevel)}
                       aria-pressed={gameMode === option.value}
                       className={`h-5 px-1.5 text-[11px] rounded font-black transition ${
                         gameMode === option.value
@@ -1209,7 +1241,7 @@ export default function Home() {
               )}
               <button
                 type="button"
-                onClick={() => resetWithSettings(gameMode, !casualMode, botLevel)}
+                onClick={() => requestMatchRestart(gameMode, !casualMode, botLevel)}
                 className={`h-8 px-2 text-[11px] rounded-md border font-bold transition ${
                   casualMode
                     ? 'border-violet-300 bg-violet-300 text-stone-950'
@@ -1249,7 +1281,7 @@ export default function Home() {
               </div>
               <button
                 type="button"
-                onClick={() => resetWithSettings()}
+                onClick={() => requestMatchRestart(gameMode, casualMode, botLevel, true)}
                 className="h-8 px-2 text-[11px] rounded-md border border-stone-500/40 bg-stone-100/10 font-bold text-stone-100 transition hover:bg-stone-100/15"
               >
                 {copy.reset}
@@ -1589,6 +1621,19 @@ export default function Home() {
           </div>
         )}
 
+        {pendingMatchReset && !showStartScreen && !isOnlineMode && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#08040b]/80 px-4 backdrop-blur-md">
+            <div role="dialog" aria-modal="true" aria-labelledby="restart-match-title" className="w-full max-w-sm rounded-lg border border-amber-200/40 bg-[#1c130c] p-5 text-center shadow-2xl shadow-black/70">
+              <h2 id="restart-match-title" className="text-xl font-black text-amber-50">{copy.restartTitle}</h2>
+              <p className="mt-3 text-sm font-bold leading-6 text-amber-50/75">{copy.restartBody}</p>
+              <div className="mt-5 grid grid-cols-2 gap-2">
+                <button type="button" onClick={() => setPendingMatchReset(null)} className="h-11 rounded-md border border-white/15 px-3 text-sm font-bold text-stone-100 transition hover:bg-white/10">{copy.cancel}</button>
+                <button type="button" onClick={confirmMatchRestart} className="h-11 rounded-md bg-amber-200 px-3 text-sm font-black text-stone-950 transition hover:bg-amber-100">{copy.restartProceed}</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showResignConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#08040b]/80 px-4 backdrop-blur-md">
             <div className="w-full max-w-sm rounded-lg border border-red-200/40 bg-[#1c0f0f] p-5 text-center shadow-2xl shadow-black/70">
@@ -1879,7 +1924,7 @@ export default function Home() {
                   key={option.value}
                   type="button"
                   aria-pressed={botLevel === option.value}
-                  onClick={() => resetWithSettings('pvbot', casualMode, option.value)}
+                  onClick={() => requestMatchRestart('pvbot', casualMode, option.value)}
                   className={`min-h-10 rounded-md border px-3 py-1 text-left transition ${
                     botLevel === option.value
                       ? 'border-emerald-200 bg-emerald-300 text-[#06111f]'
@@ -2032,12 +2077,12 @@ export default function Home() {
         ) : (
         <section className={`grid flex-1 ${isOnlineMode ? 'gap-2' : 'gap-3'} ${
           isOnlineMode
-            ? 'md:grid-cols-[minmax(72px,160px)_minmax(380px,1fr)_260px]'
+            ? 'xl:grid-cols-[minmax(72px,160px)_minmax(380px,1fr)_260px]'
             : isCoachCollapsed
-              ? 'md:grid-cols-[76px_minmax(540px,1fr)_300px] xl:grid-cols-[76px_minmax(620px,1fr)_320px]'
-              : 'md:grid-cols-[190px_minmax(540px,1fr)_300px] xl:grid-cols-[220px_minmax(620px,1fr)_320px]'
+              ? 'xl:grid-cols-[76px_minmax(620px,1fr)_320px]'
+              : 'xl:grid-cols-[220px_minmax(620px,1fr)_320px]'
         }`}>
-          <aside className={`coach-panel hidden md:flex ${isCoachCollapsed ? 'items-center px-2 py-3' : 'px-3 py-3'} flex-col gap-3`}>
+          <aside className={`coach-panel hidden xl:flex ${isCoachCollapsed ? 'items-center px-2 py-3' : 'px-3 py-3'} flex-col gap-3`}>
             <button
               type="button"
               onClick={() => setIsCoachCollapsed((current) => !current)}

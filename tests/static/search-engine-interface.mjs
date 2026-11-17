@@ -185,3 +185,31 @@ function viewForSearch() {
     winner: null,
   };
 }
+
+test('Hard Bot stays unchanged when only the unrevealed opponent trap moves', () => {
+  const { getPlayerView } = loadGameModule('src/game/view.ts');
+  const { createShallowSearchEngine } = loadGameModule('src/game/search-engine.ts');
+  const board = emptyBoard();
+  board[4][4] = { kind: 'rook', owner: 'gote' };
+  board[4][6] = { kind: 'gold', owner: 'sente' };
+  const base = {
+    ...viewForSearch(), board,
+    currentPlayer: 'gote',
+    config: { casualMode: true, gameMode: 'pvbot', botLevel: 'hard', botPlayer: 'gote' },
+    pitfalls: { sente: null, gote: null }, pendingPitfall: null,
+    lastPitfallPositionByPlayer: { sente: null, gote: null },
+  };
+  const stateA = {
+    ...base,
+    pitfalls: { ...base.pitfalls, sente: { owner: 'sente', position: { row: 4, col: 6 } } },
+  };
+  const stateB = {
+    ...base,
+    pitfalls: { ...base.pitfalls, sente: { owner: 'sente', position: { row: 1, col: 1 } } },
+  };
+  const viewA = getPlayerView(stateA, 'gote');
+  const viewB = getPlayerView(stateB, 'gote');
+  assert.deepEqual(viewA, viewB);
+  const engine = createShallowSearchEngine();
+  assert.deepEqual(engine.analyze(viewA, { depth: 2, maxCandidates: 5 }), engine.analyze(viewB, { depth: 2, maxCandidates: 5 }));
+});
