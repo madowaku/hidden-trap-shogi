@@ -1,0 +1,103 @@
+{
+  "variant": "checkVoidsTrap",
+  "label": "D: 王手をかけた手番の罠は無効",
+  "games": 400,
+  "draws": 5,
+  "winsByName": {
+    "mind": 395
+  },
+  "senteWinRate": 0.491,
+  "endings": {
+    "hopeless": 202,
+    "mate": 193,
+    "draw": 5
+  },
+  "endingShare": {
+    "hopeless": 0.505,
+    "mate": 0.482,
+    "draw": 0.013
+  },
+  "plies": {
+    "p10": 67,
+    "median": 116,
+    "p90": 213,
+    "mean": 130.5
+  },
+  "checksPerGame": 10.44,
+  "checkDeathRate": 0.064,
+  "checkDeathByDestinations": {
+    "0": {
+      "checks": 193,
+      "died": 193,
+      "deathRate": 1
+    },
+    "1": {
+      "checks": 591,
+      "died": 20,
+      "deathRate": 0.034
+    },
+    "2": {
+      "checks": 763,
+      "died": 13,
+      "deathRate": 0.017
+    },
+    "3": {
+      "checks": 877,
+      "died": 16,
+      "deathRate": 0.018
+    },
+    "4": {
+      "checks": 770,
+      "died": 6,
+      "deathRate": 0.008
+    },
+    "5+": {
+      "checks": 981,
+      "died": 19,
+      "deathRate": 0.019
+    }
+  },
+  "trapHitsPerPly": 0.147,
+  "events": {
+    "kingImmune": 0,
+    "retry": 0,
+    "voided": 4176
+  },
+  "leadChangesPerGame": 2.71,
+  "comebackRate": 0.628,
+  "decidedAtShare": {
+    "median": 0.6612903225806451,
+    "p25": 0.42857142857142855
+  },
+  "dilemmaRate": 0.248,
+  "trapPressure": 0.135,
+  "moveEntropyBits": 0.9,
+  "trapEntropyBits": 0.81,
+  "openingUniqueness": 0.968,
+  "finishers": {
+    "promoted_rook": 71,
+    "promoted_bishop": 58,
+    "promoted_silver": 16,
+    "gold": 83,
+    "rook": 27,
+    "knight": 16,
+    "promoted_lance": 22,
+    "silver": 38,
+    "promoted_knight": 14,
+    "pawn": 7,
+    "promoted_pawn": 12,
+    "lance": 13,
+    "bishop": 17,
+    "king": 1
+  },
+  "finisherEntropyBits": 3.33,
+  "roulette": {
+    "games": 0,
+    "balancedShare": null,
+    "meanLoserValue": null
+  },
+  "agents": "mind,mind",
+  "casual": true,
+  "seed": 30000,
+  "seconds": 370.6
+}

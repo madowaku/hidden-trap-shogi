@@ -1,0 +1,103 @@
+{
+  "variant": "standard",
+  "label": "A: 現行ルール",
+  "games": 400,
+  "draws": 4,
+  "winsByName": {
+    "easy": 396
+  },
+  "senteWinRate": 0.49,
+  "endings": {
+    "missed-defense": 388,
+    "roulette": 6,
+    "draw": 4,
+    "mate": 2
+  },
+  "endingShare": {
+    "missed-defense": 0.97,
+    "roulette": 0.015,
+    "draw": 0.01,
+    "mate": 0.005
+  },
+  "plies": {
+    "p10": 25,
+    "median": 88,
+    "p90": 189,
+    "mean": 99.3
+  },
+  "checksPerGame": 1.23,
+  "checkDeathRate": 0.803,
+  "checkDeathByDestinations": {
+    "0": {
+      "checks": 2,
+      "died": 2,
+      "deathRate": 1
+    },
+    "1": {
+      "checks": 44,
+      "died": 40,
+      "deathRate": 0.909
+    },
+    "2": {
+      "checks": 94,
+      "died": 83,
+      "deathRate": 0.883
+    },
+    "3": {
+      "checks": 135,
+      "died": 115,
+      "deathRate": 0.852
+    },
+    "4": {
+      "checks": 118,
+      "died": 87,
+      "deathRate": 0.737
+    },
+    "5+": {
+      "checks": 100,
+      "died": 69,
+      "deathRate": 0.69
+    }
+  },
+  "trapHitsPerPly": 0.059,
+  "events": {
+    "kingImmune": 0,
+    "retry": 0,
+    "voided": 0
+  },
+  "leadChangesPerGame": null,
+  "comebackRate": 0,
+  "decidedAtShare": {
+    "median": null,
+    "p25": null
+  },
+  "dilemmaRate": null,
+  "trapPressure": null,
+  "moveEntropyBits": null,
+  "trapEntropyBits": null,
+  "openingUniqueness": 1,
+  "finishers": {
+    "promoted_bishop": 76,
+    "promoted_pawn": 48,
+    "silver": 18,
+    "bishop": 56,
+    "gold": 61,
+    "pawn": 51,
+    "promoted_knight": 25,
+    "promoted_rook": 11,
+    "rook": 10,
+    "knight": 32,
+    "lance": 3,
+    "promoted_silver": 5
+  },
+  "finisherEntropyBits": 3.18,
+  "roulette": {
+    "games": 0,
+    "balancedShare": null,
+    "meanLoserValue": null
+  },
+  "agents": "easy,easy",
+  "casual": true,
+  "seed": 50000,
+  "seconds": 5.8
+}

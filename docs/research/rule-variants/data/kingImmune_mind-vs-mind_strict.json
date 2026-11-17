@@ -1,0 +1,106 @@
+{
+  "variant": "kingImmune",
+  "label": "B: 王の移動は罠無効",
+  "games": 200,
+  "draws": 4,
+  "winsByName": {
+    "mind": 196
+  },
+  "senteWinRate": 0.526,
+  "endings": {
+    "roulette": 73,
+    "hopeless": 27,
+    "mate": 46,
+    "trap-mate": 50,
+    "draw": 4
+  },
+  "endingShare": {
+    "roulette": 0.365,
+    "hopeless": 0.135,
+    "mate": 0.23,
+    "trap-mate": 0.25,
+    "draw": 0.02
+  },
+  "plies": {
+    "p10": 53,
+    "median": 97,
+    "p90": 173,
+    "mean": 106.5
+  },
+  "checksPerGame": 10.94,
+  "checkDeathRate": 0.083,
+  "checkDeathByDestinations": {
+    "0": {
+      "checks": 46,
+      "died": 46,
+      "deathRate": 1
+    },
+    "1": {
+      "checks": 228,
+      "died": 53,
+      "deathRate": 0.232
+    },
+    "2": {
+      "checks": 377,
+      "died": 24,
+      "deathRate": 0.064
+    },
+    "3": {
+      "checks": 501,
+      "died": 26,
+      "deathRate": 0.052
+    },
+    "4": {
+      "checks": 485,
+      "died": 18,
+      "deathRate": 0.037
+    },
+    "5+": {
+      "checks": 550,
+      "died": 14,
+      "deathRate": 0.025
+    }
+  },
+  "trapHitsPerPly": 0.156,
+  "events": {
+    "kingImmune": 207,
+    "retry": 0,
+    "voided": 0
+  },
+  "leadChangesPerGame": 3.33,
+  "comebackRate": 0.638,
+  "decidedAtShare": {
+    "median": 0.8588235294117647,
+    "p25": 0.6623376623376623
+  },
+  "dilemmaRate": 0.369,
+  "trapPressure": 0.196,
+  "moveEntropyBits": 1.05,
+  "trapEntropyBits": 0.9,
+  "openingUniqueness": 0.94,
+  "finishers": {
+    "bishop": 24,
+    "promoted_knight": 5,
+    "promoted_rook": 24,
+    "gold": 29,
+    "promoted_bishop": 34,
+    "silver": 18,
+    "lance": 11,
+    "rook": 27,
+    "knight": 11,
+    "promoted_pawn": 2,
+    "pawn": 6,
+    "promoted_silver": 4,
+    "promoted_lance": 1
+  },
+  "finisherEntropyBits": 3.27,
+  "roulette": {
+    "games": 123,
+    "balancedShare": 0.033,
+    "meanLoserValue": -0.932
+  },
+  "agents": "mind,mind",
+  "casual": false,
+  "seed": 40000,
+  "seconds": 98.7
+}
