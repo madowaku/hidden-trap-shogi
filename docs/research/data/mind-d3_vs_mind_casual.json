@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "a": "mind-d3",
+    "b": "mind",
+    "games": 300,
+    "draws": 0,
+    "winRateA": 0.553,
+    "winRateA95": [
+      0.497,
+      0.61
+    ],
+    "senteWinRate": 0.513,
+    "turns": {
+      "median": 23,
+      "p10": 13,
+      "p90": 41
+    },
+    "endings": {
+      "defense-trapped (loser: mind-d3)": 129,
+      "defense-trapped (loser: mind)": 161,
+      "king-left-hanging (loser: mind)": 5,
+      "king-left-hanging (loser: mind-d3)": 5
+    },
+    "leadChangesPerGame": 0.98,
+    "mind-d3": {
+      "wins": 166,
+      "winsAsSente": 85,
+      "gamesAsSente": 150,
+      "trappedRate": 0.1614457831325301,
+      "dilemmaRate": 0.3405622489959839,
+      "expectedTrapRisk": 0.21665465695958955
+    },
+    "mind": {
+      "wins": 134,
+      "winsAsSente": 69,
+      "gamesAsSente": 150,
+      "trappedRate": 0.16106480236622747,
+      "dilemmaRate": 0.3304651788115085,
+      "expectedTrapRisk": 0.21130558715833012
+    },
+    "casual": true,
+    "seconds": 71
+  },
+  "samples": []
+}

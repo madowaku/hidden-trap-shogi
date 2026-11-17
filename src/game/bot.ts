@@ -32,6 +32,9 @@ import {
 } from './board';
 import { PIECE_VALUES, BOARD_SIZE } from './constants';
 import { isRepeatPitfallPosition } from './pitfall';
+import { decideMindGameMove, planMindGameTurn } from './mindgame';
+import type { MindGameOptions, MindGameTurnPlan } from './mindgame';
+import { getPlayerView } from './view';
 
 type BotLevelProfile = {
   trapSuspicion: number;
@@ -64,14 +67,32 @@ export const BOT_LEVEL_PROFILES: Record<BotLevel, BotLevelProfile> = {
 /**
  * 戦術Bot実装
  *
- * まだ深い読みではなく、1手ごとの評価で「ゲームらしい」応答を作る。
+ * Easy / Normal は深い読みではなく、1手ごとの評価で「ゲームらしい」応答を作る。
  * - 王取り、駒得、成りを重視
  * - 既知の罠と明らかな取り返しを避ける
  * - 持ち駒打ちも候補に入れる
  * - 罠は相手の有力な着地点に置く
+ *
+ * Hard は mindgame.ts の読み合いエンジンを使う。
+ * 罠と指し手を 1 ターン分まとめて計画し、罠ゲームの均衡に従って確率的に選ぶ。
+ * エンジンには getPlayerView を通した公開情報だけを渡す。
  */
 export class SimpleBot implements BotStrategy {
+  // 罠設置 → 着手の 2 回の呼び出しで同じ計画を使うためのキャッシュ（盤面オブジェクト単位）
+  private readonly mindGamePlans = new WeakMap<Board, { turn: number; plan: MindGameTurnPlan }>();
+
+  private mindGameOptions(state: GameState, player: Player): MindGameOptions {
+    // 自分が直前に置いた罠マスは自分の情報なので、state から直接渡してよい
+    return { ownLastTrap: state.lastPitfallPositionByPlayer?.[player] ?? null };
+  }
+
   decidePitfall(state: GameState, player: Player, level: BotLevel = 'normal'): Position {
+    if (level === 'hard') {
+      const plan = planMindGameTurn(getPlayerView(state, player), this.mindGameOptions(state, player));
+      this.mindGamePlans.set(state.board, { turn: state.turn, plan });
+      return plan.pitfall;
+    }
+
     const profile = BOT_LEVEL_PROFILES[level];
     const opponent = getOpponent(player);
     const opponentActions = getAllCandidateActions(state, opponent);
@@ -94,11 +115,16 @@ export class SimpleBot implements BotStrategy {
     }
 
     if (level === 'easy') return pickRandom(scoredTargets).position;
-    if (level === 'hard') return pickBest(scoredTargets).position;
     return pickFromBest(scoredTargets).position;
   }
 
   decideMove(state: GameState, player: Player, level: BotLevel = 'normal'): GameAction {
+    if (level === 'hard') {
+      const planned = this.mindGamePlans.get(state.board);
+      if (planned && planned.turn === state.turn) return planned.plan.move.action;
+      return decideMindGameMove(getPlayerView(state, player), this.mindGameOptions(state, player)).action;
+    }
+
     const profile = BOT_LEVEL_PROFILES[level];
     const actions = getAllCandidateActions(state, player);
     if (actions.length === 0) {
@@ -110,7 +136,6 @@ export class SimpleBot implements BotStrategy {
     const scoredActions = scoreCandidateActions(state, player, actions, profile, level, belief);
 
     if (level === 'easy') return pickEasyMove(state, player, scoredActions).action;
-    if (level === 'hard') return pickBest(scoredActions).action;
     return pickFromBest(scoredActions).action;
   }
 
@@ -588,10 +613,6 @@ function pickEasyMove<T extends { action: GameAction; score: number }>(
   const sorted = [...scored].sort((a, b) => b.score - a.score);
   const poolSize = Math.max(1, Math.ceil(sorted.length * 0.6));
   return pickRandom(sorted.slice(0, poolSize));
-}
-
-function pickBest<T>(scored: Array<T & { score: number }>): T {
-  return [...scored].sort((a, b) => b.score - a.score)[0];
 }
 
 function isDirectKingCapture(state: GameState, player: Player, action: GameAction): boolean {
