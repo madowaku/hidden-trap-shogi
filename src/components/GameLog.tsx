@@ -65,7 +65,17 @@ export default function GameLog({ log, winner, language = 'ja', viewer = 'specta
                 : language === 'ja' ? '手が無効化された' : 'The move was cancelled'}
             </span>
           )}
-          {entry.pitfallTriggered && (
+          {entry.rescued && (
+            <span className="ml-2 rounded bg-cyan-300 px-1.5 py-0.5 text-xs font-black text-[#04161c]">
+              {language === 'ja' ? '罠→指し直し' : 'Trapped → retry'}
+            </span>
+          )}
+          {entry.voidedPitfall && (
+            <span className="ml-2 rounded bg-indigo-300 px-1.5 py-0.5 text-xs font-black text-[#0b0b24]">
+              {language === 'ja' ? '王手で罠消滅' : 'Trap voided by check'}
+            </span>
+          )}
+          {entry.pitfallTriggered && !entry.rescued && (
             <span className={`ml-2 rounded px-1.5 py-0.5 text-xs font-black text-stone-950 ${
               trapReactionKind === 'opponent_trapped' ? 'bg-amber-200' : 'bg-fuchsia-300'
             }`}>

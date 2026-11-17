@@ -5,23 +5,31 @@
 'use client';
 
 import { useReducer, useCallback, useEffect, useRef } from 'react';
-import type { Position, GameAction, UISelection, PieceKind, BotLevel } from '@/game/types';
+import type { Position, GameAction, UISelection, PieceKind, BotLevel, TrapRule } from '@/game/types';
 import { createInitialGameState } from '@/game/constants';
 import { gameReducer } from '@/game/reducer';
-import { getLegalMoves, getLegalDrops } from '@/game/board';
+import { getLegalMoves, getLegalDrops, posEquals } from '@/game/board';
 import { simpleBot } from '@/game/bot';
 
 const BOT_DELAY = 500; // ms
+/** C の指し直しは、罠の演出を見せてから指す */
+const BOT_RETRY_DELAY = 1300; // ms
+
+/** C の指し直し中は、罠で失敗したマスを候補から外す */
+function withoutRetryTrap(squares: Position[], trap: Position | undefined): Position[] {
+  return trap ? squares.filter(square => !posEquals(square, trap)) : squares;
+}
 
 export function useGame(
   gameMode: 'pvp' | 'pvbot' = 'pvbot',
   casualMode: boolean = true,
-  botLevel: BotLevel = 'normal'
+  botLevel: BotLevel = 'normal',
+  trapRule: TrapRule = 'standard'
 ) {
   const [state, dispatch] = useReducer(
     gameReducer,
-    { gameMode, casualMode, botLevel },
-    (args) => createInitialGameState(args.gameMode, args.casualMode, 'gote', args.botLevel)
+    { gameMode, casualMode, botLevel, trapRule },
+    (args) => createInitialGameState(args.gameMode, args.casualMode, 'gote', args.botLevel, args.trapRule)
   );
 
   const [selection, setSelection] = useReducer(
@@ -60,17 +68,17 @@ export function useGame(
     if (!piece || piece.owner !== state.currentPlayer) return;
     if (state.phase.type !== 'MOVE_SELECTION') return;
 
-    const legalMoves = getLegalMoves(state.board, position);
+    const legalMoves = withoutRetryTrap(getLegalMoves(state.board, position), state.checkRetry?.trap);
     setSelection({ type: 'piece', position, legalMoves });
-  }, [state.board, state.currentPlayer, state.phase.type]);
+  }, [state.board, state.checkRetry, state.currentPlayer, state.phase.type]);
 
   // 持ち駒を選択
   const selectHandPiece = useCallback((pieceKind: PieceKind) => {
     if (state.phase.type !== 'MOVE_SELECTION') return;
 
-    const legalDrops = getLegalDrops(state.board, state.currentPlayer, pieceKind);
+    const legalDrops = withoutRetryTrap(getLegalDrops(state.board, state.currentPlayer, pieceKind), state.checkRetry?.trap);
     setSelection({ type: 'hand_piece', pieceKind, legalDrops });
-  }, [state.board, state.currentPlayer, state.phase.type]);
+  }, [state.board, state.checkRetry, state.currentPlayer, state.phase.type]);
 
   // 手を実行
   const executeMove = useCallback((action: GameAction) => {
@@ -96,9 +104,14 @@ export function useGame(
   }, []);
 
   // ゲームリセット
-  const resetGame = useCallback((newMode?: 'pvp' | 'pvbot', newCasual?: boolean, newBotLevel?: BotLevel) => {
+  const resetGame = useCallback((
+    newMode?: 'pvp' | 'pvbot',
+    newCasual?: boolean,
+    newBotLevel?: BotLevel,
+    newTrapRule?: TrapRule
+  ) => {
     clearBotTimeout();
-    dispatch({ type: 'RESET_GAME', gameMode: newMode, casualMode: newCasual, botLevel: newBotLevel });
+    dispatch({ type: 'RESET_GAME', gameMode: newMode, casualMode: newCasual, botLevel: newBotLevel, trapRule: newTrapRule });
     clearSelection();
     setBotPhase(null);
   }, [clearBotTimeout, clearSelection]);
@@ -142,7 +155,7 @@ export function useGame(
         dispatch({ type: 'EXECUTE_MOVE', action });
         botTimeoutRef.current = null;
         setBotPhase(null);
-      }, BOT_DELAY);
+      }, state.checkRetry ? BOT_RETRY_DELAY : BOT_DELAY);
       return () => {
         clearBotTimeout();
       };

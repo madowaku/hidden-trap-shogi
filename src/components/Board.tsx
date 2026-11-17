@@ -25,6 +25,10 @@ type Props = {
   reviewTrapData?: Record<string, { count: number; state: 'hit' | 'miss' | 'none' }>;
   compact?: boolean;
   orientation?: BoardOrientation;
+  /** 直前の手（移動元は打ちなら null） */
+  lastMove?: { readonly from: Position | null; readonly to: Position } | null;
+  /** C の指し直し中、罠で塞がれたマス */
+  closedSquare?: Position | null;
   onCellClick: (pos: Position) => void;
 };
 
@@ -42,6 +46,8 @@ export default function Board({
   reviewTrapData,
   compact = false,
   orientation = 'sente',
+  lastMove = null,
+  closedSquare = null,
   onCellClick,
 }: Props) {
   const selectedPos = selection.type === 'piece' ? selection.position : null;
@@ -97,6 +103,9 @@ export default function Board({
                 const cellReviewData = reviewTrapData?.[`${row}-${col}`];
                 const reviewTrapCount = cellReviewData?.count ?? 0;
                 const reviewTrapState = cellReviewData?.state ?? 'none';
+                const isLastMoveTo = lastMove !== null && posEquals(pos, lastMove.to);
+                const isLastMoveFrom = lastMove?.from ? posEquals(pos, lastMove.from) : false;
+                const isClosed = closedSquare !== null && posEquals(pos, closedSquare);
 
                 return (
                   <Cell
@@ -118,6 +127,9 @@ export default function Board({
                     reviewTrapState={reviewTrapState}
                     compact={compact}
                     orientation={orientation}
+                    isLastMoveTo={isLastMoveTo}
+                    isLastMoveFrom={isLastMoveFrom}
+                    isClosed={isClosed}
                     onClick={() => onCellClick(pos)}
                   />
                 );

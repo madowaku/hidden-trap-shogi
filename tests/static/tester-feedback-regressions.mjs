@@ -7,7 +7,7 @@ const cell = readFileSync(new URL('../../src/components/Cell.tsx', import.meta.u
 
 test('in-match options cannot reset immediately without confirmation', () => {
   assert.match(page, /const requestMatchRestart = /);
-  assert.match(page, /setPendingMatchReset\(\{ mode: nextMode, casual: nextCasual, level: nextBotLevel \}\)/);
+  assert.match(page, /setPendingMatchReset\(\{ mode: nextMode, casual: nextCasual, level: nextBotLevel(, rule: nextRule)? \}\)/);
   assert.match(page, /onClick=\{\(\) => requestMatchRestart\(option.value, casualMode, botLevel\)\}/);
   assert.match(page, /onClick=\{\(\) => requestMatchRestart\('pvbot', casualMode, option.value\)\}/);
   assert.match(page, /onClick=\{\(\) => requestMatchRestart\(gameMode, !casualMode, botLevel\)\}/);

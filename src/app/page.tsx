@@ -6,6 +6,13 @@ import GameInfo from '@/components/GameInfo';
 import GameLog from '@/components/GameLog';
 import NinjaGuide from '@/components/NinjaGuide';
 import PieceStand from '@/components/PieceStand';
+import EndingReview from '@/components/EndingReview';
+import PlaytestLogPanel from '@/components/PlaytestLogPanel';
+import RuleModePicker, { RULE_TONE } from '@/components/RuleModePicker';
+import RuleStatusStrip from '@/components/RuleStatusStrip';
+import { usePlaytestSession } from '@/hooks/usePlaytestSession';
+import { getComparisonRule, getTrapRuleMode } from '@/game/ruleModes';
+import type { NextChoice } from '@/game/playtest';
 import { FEEDBACK_URL } from '@/constants/config';
 import { canPromote, getLegalDrops, getLegalMoves, isKingSquare, isPlayerInCheck, posEquals, findKing } from '@/game/board';
 import { simpleBot } from '@/game/bot';
@@ -18,7 +25,7 @@ import { getTrapReactionKind } from '@/game/reaction';
 import { getPlayerView } from '@/game/view';
 import type { BoardOrientation } from '@/game/orientation';
 import type { EngineCandidate, SearchEngine } from '@/game/search-engine';
-import type { BotLevel, BotMoveDebugSummary, GameMode, MoveAction, Phase, PieceKind, Player, Position, PublicLogEntry, UISelection, Viewer } from '@/game/types';
+import type { BotLevel, BotMoveDebugSummary, GameMode, MoveAction, Phase, PieceKind, Player, Position, PublicLogEntry, TrapRule, UISelection, Viewer } from '@/game/types';
 
 type Language = 'ja' | 'en';
 type InviteCopyStatus = 'idle' | 'copied' | 'failed';
@@ -468,6 +475,7 @@ export default function Home() {
   const [gameMode, setGameMode] = useState<GameMode>('pvbot');
   const [casualMode, setCasualMode] = useState(true);
   const [botLevel, setBotLevel] = useState<BotLevel>('normal');
+  const [trapRule, setTrapRule] = useState<TrapRule>('standard');
   const [pitfallDraft, setPitfallDraft] = useState<Position | null>(null);
   const [pitfallMessage, setPitfallMessage] = useState<string | null>(null);
   const [showStartScreen, setShowStartScreen] = useState(true);
@@ -475,7 +483,7 @@ export default function Home() {
   const [showKnownIssues, setShowKnownIssues] = useState(false);
   const [showResignConfirm, setShowResignConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [pendingMatchReset, setPendingMatchReset] = useState<{ mode: GameMode; casual: boolean; level: BotLevel } | null>(null);
+  const [pendingMatchReset, setPendingMatchReset] = useState<{ mode: GameMode; casual: boolean; level: BotLevel; rule: TrapRule } | null>(null);
   const [isCoachCollapsed, setIsCoachCollapsed] = useState(false);
   const [isOnlineMode, setIsOnlineMode] = useState(false);
   const [onlineRoomId, setOnlineRoomId] = useState('test-room');
@@ -484,7 +492,7 @@ export default function Home() {
   const [onlineHandSelection, setOnlineHandSelection] = useState<PieceKind | null>(null);
   const [onlinePromotionMove, setOnlinePromotionMove] = useState<MoveAction | null>(null);
   const [debugBotEnabled, setDebugBotEnabled] = useState(false);
-  const game = useGame(gameMode, casualMode, botLevel);
+  const game = useGame(gameMode, casualMode, botLevel, trapRule);
   const onlineRoom = useOnlineRoom();
   const {
     settings: soundSettings,
@@ -558,6 +566,11 @@ export default function Home() {
   };
   const { state, selection } = game;
   const copy = COPY[language];
+  const playtest = usePlaytestSession({ state, trapRule, active: !isOnlineMode && !showStartScreen });
+  // 盤上の罠ルール（オンラインは現行ルールのみ）
+  const activeTrapRule: TrapRule = isOnlineMode ? 'standard' : state.config.trapRule ?? 'standard';
+  const activeRuleMode = getTrapRuleMode(activeTrapRule);
+  const retryTrap = !isOnlineMode ? state.checkRetry?.trap ?? null : null;
   const inviteCopyMessage = inviteCopyStatus === 'copied'
     ? copy.copied
     : inviteCopyStatus === 'failed'
@@ -662,10 +675,19 @@ export default function Home() {
     [activeBoard, activeLastPitfallPosition]
   );
   const selectedPitfallLabel = activePitfallDraft ? formatPos(activePitfallDraft) : null;
-  const trapBurstPosition = latestLog?.pitfallTriggered
+  const retryBurstPosition = !isOnlineMode ? state.checkRetry?.trap ?? null : null;
+  // C の指し直しが終わった後は、罠の演出をもう一度出さない（指し直しの時に出している）
+  const lastTrapBurst = latestLog?.pitfallTriggered && !latestLog.rescued
     ? latestLog.triggeredPitfall ?? null
     : null;
+  const trapBurstPosition = retryBurstPosition ?? lastTrapBurst;
   const trapReactionKind = getTrapReactionKind(latestLog, activeViewer);
+  // 直前の手。罠で失敗した手は、狙った着地点だけを示す
+  const lastMove = useMemo(() => {
+    const action = latestLog?.action ?? latestLog?.failedAction ?? null;
+    if (!action) return null;
+    return { from: action.type === 'move' && latestLog?.action ? action.from : null, to: action.to };
+  }, [latestLog]);
   const trapReactionCopy = trapReactionKind === 'player_trapped'
     ? {
       title: copy.trapPlayerTitle,
@@ -699,7 +721,7 @@ export default function Home() {
   useEffect(() => {
     if (!latestLog) return;
     const logKey = `${isOnlineMode ? 'online' : 'local'}:${latestLog.turn}:${latestLog.player}`;
-    if (latestLog.pitfallTriggered) {
+    if (latestLog.pitfallTriggered && !latestLog.rescued) {
       playSound('trapHit', logKey);
       return;
     }
@@ -711,6 +733,11 @@ export default function Home() {
       playSound('trapMissReveal', logKey);
     }
   }, [isOnlineMode, latestLog, playSound]);
+
+  useEffect(() => {
+    if (!retryBurstPosition) return;
+    playSound('trapHit', `retry:${activeTurn}:${retryBurstPosition.row}:${retryBurstPosition.col}`);
+  }, [activeTurn, playSound, retryBurstPosition]);
 
   useEffect(() => {
     if (!isCheckAlert || !checkKingPosition) return;
@@ -1006,14 +1033,16 @@ export default function Home() {
   const resetWithSettings = (
     nextMode = gameMode,
     nextCasual = casualMode,
-    nextBotLevel = botLevel
+    nextBotLevel = botLevel,
+    nextRule = trapRule
   ) => {
     setGameMode(nextMode);
     setCasualMode(nextCasual);
     setBotLevel(nextBotLevel);
+    setTrapRule(nextRule);
     setPitfallDraft(null);
     setPitfallMessage(null);
-    game.resetGame(nextMode, nextCasual, nextBotLevel);
+    game.resetGame(nextMode, nextCasual, nextBotLevel, nextRule);
   };
 
   // 変更の意図がない再クリックは無視。対局中は明示的に確認してから開始し直す。
@@ -1021,19 +1050,21 @@ export default function Home() {
     nextMode = gameMode,
     nextCasual = casualMode,
     nextBotLevel = botLevel,
-    force = false
+    force = false,
+    nextRule = trapRule
   ) => {
-    if (!force && nextMode === gameMode && nextCasual === casualMode && nextBotLevel === botLevel) return;
+    const unchanged = nextMode === gameMode && nextCasual === casualMode && nextBotLevel === botLevel && nextRule === trapRule;
+    if (!force && unchanged) return;
     if (showStartScreen || state.phase.type === 'GAME_OVER') {
-      resetWithSettings(nextMode, nextCasual, nextBotLevel);
+      resetWithSettings(nextMode, nextCasual, nextBotLevel, nextRule);
       return;
     }
-    setPendingMatchReset({ mode: nextMode, casual: nextCasual, level: nextBotLevel });
+    setPendingMatchReset({ mode: nextMode, casual: nextCasual, level: nextBotLevel, rule: nextRule });
   };
 
   const confirmMatchRestart = () => {
     if (!pendingMatchReset) return;
-    resetWithSettings(pendingMatchReset.mode, pendingMatchReset.casual, pendingMatchReset.level);
+    resetWithSettings(pendingMatchReset.mode, pendingMatchReset.casual, pendingMatchReset.level, pendingMatchReset.rule);
     setPendingMatchReset(null);
     setShowSettings(false);
   };
@@ -1062,6 +1093,17 @@ export default function Home() {
     } catch {
       setShowTutorial(true);
     }
+  };
+
+  // 終局後の「もう一局 / もう一方のルールで / メニューへ」。押したボタンは試遊ログに残す
+  const handleEndingNext = (choice: NextChoice) => {
+    playtest.recordNext(choice);
+    if (choice === 'stop') {
+      setShowStartScreen(true);
+      return;
+    }
+    const nextRule = choice === 'switch' ? getComparisonRule(trapRule) ?? trapRule : trapRule;
+    resetWithSettings(gameMode, casualMode, botLevel, nextRule);
   };
 
   const startOnlineRoom = () => {
@@ -1149,6 +1191,12 @@ export default function Home() {
             </span>
             <span className="rounded-md border border-red-200/35 bg-red-500/16 px-2.5 py-1 text-[11px] font-black text-red-50 shadow-inner shadow-black/20">
               {copy.matchPhaseLabel}: {formatPhaseLabel(activePhase, language)}
+            </span>
+            <span
+              title={activeRuleMode.summary[language]}
+              className={`rule-badge rounded-md border px-2 py-1 text-[11px] font-black shadow-inner shadow-black/20 ${RULE_TONE[activeTrapRule].chip}`}
+            >
+              {activeRuleMode.code} {activeRuleMode.name[language]}
             </span>
             {isCheckAlert && (
               <span className="rounded-md border border-red-200/60 bg-red-500 px-2 py-1 text-[11px] font-black text-white shadow shadow-red-950/40">
@@ -1250,6 +1298,14 @@ export default function Home() {
               >
                 {activeCasualOption.label[language]}
               </button>
+              {!isOnlineMode && (
+                <RuleModePicker
+                  compact
+                  value={trapRule}
+                  language={language}
+                  onChange={(rule) => requestMatchRestart(gameMode, casualMode, botLevel, false, rule)}
+                />
+              )}
               <div className="h-8 px-1.5 flex items-center gap-1 rounded-md border border-white/10 bg-black/15">
                 <button
                   type="button"
@@ -1501,6 +1557,14 @@ export default function Home() {
                 </div>
               )}
 
+              <div className="mt-2">
+                <RuleModePicker
+                  value={trapRule}
+                  language={language}
+                  onChange={(rule) => resetWithSettings(gameMode, casualMode, botLevel, rule)}
+                />
+              </div>
+
               <div className="parchment-panel mt-2 rounded-md border p-2 text-stone-950">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -1549,6 +1613,10 @@ export default function Home() {
                 </div>
               </div>
 
+              <div className="mt-2">
+                <PlaytestLogPanel records={playtest.records} language={language} onClear={playtest.clear} />
+              </div>
+
               <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-xs font-bold text-stone-300">
                   {copy.mobileWarning}
@@ -1556,9 +1624,10 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={startMatch}
-                  className="h-9 rounded-md bg-amber-200 px-6 text-sm font-black text-stone-950 transition hover:bg-white"
+                  className="start-match-button h-11 rounded-md bg-amber-200 px-6 text-sm font-black text-stone-950 transition hover:bg-white"
                 >
                   {copy.start}
+                  <span className="ml-2 rounded bg-stone-950/15 px-1.5 py-0.5 font-serif">{getTrapRuleMode(trapRule).code}</span>
                 </button>
               </div>
             </div>
@@ -2172,11 +2241,42 @@ export default function Home() {
                 <span className="text-sm font-black mt-0.5">{copy.trapMissToast}</span>
               </div>
             )}
-            {isCheckAlert && (
-              <NinjaGuide
+            <RuleStatusStrip
+              rule={activeTrapRule}
+              language={language}
+              inCheck={isCheckAlert}
+              currentIsViewer={activeViewer === 'spectator' ? false : activeCurrentPlayer === activeViewer}
+              retryTrap={retryTrap}
+              gameOver={activePhase.type === 'GAME_OVER'}
+            />
+            {retryTrap && (
+              <div
+                key={`retry-toast-${activeTurn}`}
+                className="trap-toast retry-toast pointer-events-none absolute left-1/2 top-16 z-30 flex max-w-[min(92vw,360px)] -translate-x-1/2 flex-col items-center rounded-lg border border-cyan-50/70 bg-cyan-300 px-4 py-3 text-center text-[#04161c] shadow-2xl shadow-cyan-950/50"
+              >
+                <span className="text-xs font-black uppercase tracking-[0.26em]">Check rescue</span>
+                <span className="text-2xl font-black leading-none">{language === 'ja' ? '罠発動 → 指し直し' : 'Trapped → Retry'}</span>
+                <span className="mt-1 text-sm font-black opacity-85">
+                  {activeCurrentPlayer === activeViewer
+                    ? (language === 'ja' ? '王手中なので、もう1回だけ選べる' : 'You are in check: choose once more')
+                    : (language === 'ja' ? '相手は罠を見て指し直す' : 'They saw the trap and will retry')}
+                </span>
+              </div>
+            )}
+            {!isOnlineMode && playtest.ending && (
+              <EndingReview
+                ending={playtest.ending}
+                rule={activeTrapRule}
                 language={language}
-                variant="check"
-                className="w-full shadow-lg shadow-red-950/30 border-red-500/50"
+                viewer={playtest.human}
+                facts={playtest.facts}
+                acceptance={playtest.acceptance}
+                onAcceptance={playtest.setAcceptance}
+                note={playtest.note}
+                onNote={playtest.setNote}
+                onNext={handleEndingNext}
+                collapsed={playtest.collapsed}
+                onToggleCollapsed={playtest.toggleCollapsed}
               />
             )}
             {isOnlineMode && hasOnlineGameView && !canOnlineAct && activePhase.type !== 'GAME_OVER' && (
@@ -2207,6 +2307,8 @@ export default function Home() {
               reviewTrapData={reviewTrapData}
               compact={isOnlineMode}
               orientation={boardOrientation}
+              lastMove={lastMove}
+              closedSquare={retryTrap}
               onCellClick={handleCellClick}
             />
             <PieceStand

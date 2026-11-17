@@ -83,7 +83,12 @@ export class SimpleBot implements BotStrategy {
 
   private mindGameOptions(state: GameState, player: Player): MindGameOptions {
     // 自分が直前に置いた罠マスは自分の情報なので、state から直接渡してよい
-    return { ownLastTrap: state.lastPitfallPositionByPlayer?.[player] ?? null };
+    // 罠ルール（A/C/D）と C の指し直しの罠マスは公開情報
+    return {
+      ownLastTrap: state.lastPitfallPositionByPlayer?.[player] ?? null,
+      rules: state.config.trapRule ?? 'standard',
+      revealedTrap: state.checkRetry?.trap ?? null,
+    };
   }
 
   decidePitfall(state: GameState, player: Player, level: BotLevel = 'normal'): Position {
@@ -121,12 +126,15 @@ export class SimpleBot implements BotStrategy {
   decideMove(state: GameState, player: Player, level: BotLevel = 'normal'): GameAction {
     if (level === 'hard') {
       const planned = this.mindGamePlans.get(state.board);
-      if (planned && planned.turn === state.turn) return planned.plan.move.action;
+      // C の指し直しでは、計画していた手は罠で失敗済みなので読み直す
+      if (planned && planned.turn === state.turn && !state.checkRetry) return planned.plan.move.action;
       return decideMindGameMove(getPlayerView(state, player), this.mindGameOptions(state, player)).action;
     }
 
     const profile = BOT_LEVEL_PROFILES[level];
-    const actions = getAllCandidateActions(state, player);
+    const retryTrap = state.checkRetry?.trap ?? null;
+    const actions = getAllCandidateActions(state, player)
+      .filter(action => !retryTrap || !posEquals(action.to, retryTrap));
     if (actions.length === 0) {
       // 合法手なし（本来はありえないが安全対策）
       throw new Error('No legal moves available for bot');

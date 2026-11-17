@@ -11,6 +11,7 @@ import type {
   Player,
   PieceKind,
   BotLevel,
+  TrapRule,
 } from './types';
 import {
   applyMove,
@@ -19,7 +20,10 @@ import {
   getUnpromotedKind,
   canPromote,
   getLegalDrops,
+  getAllLegalMoves,
   isInBounds,
+  isPlayerInCheck,
+  posEquals,
   isKingSquare,
   mustPromote,
 } from './board';
@@ -35,7 +39,7 @@ export type Action =
   | { type: 'DECIDE_PROMOTION'; promote: boolean }
   | { type: 'ACKNOWLEDGE_PASS_DEVICE' }
   | { type: 'RESIGN' }
-  | { type: 'RESET_GAME'; gameMode?: 'pvp' | 'pvbot'; casualMode?: boolean; botLevel?: BotLevel }
+  | { type: 'RESET_GAME'; gameMode?: 'pvp' | 'pvbot'; casualMode?: boolean; botLevel?: BotLevel; trapRule?: TrapRule }
   ;
 
 // --- Reducer ---
@@ -58,7 +62,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
       return handleResign(state);
 
     case 'RESET_GAME':
-      return resetGame(action.gameMode, action.casualMode, action.botLevel);
+      return resetGame(action.gameMode, action.casualMode, action.botLevel, action.trapRule);
 
     default:
       return state;
@@ -97,6 +101,8 @@ function handleExecuteMove(state: GameState, action: GameAction): GameState {
   if (state.phase.type !== 'MOVE_SELECTION') return state;
   if (action.type === 'move' && !isValidMoveAction(state, action)) return state;
   if (action.type === 'drop' && !isValidDropAction(state, action)) return state;
+  // C: 指し直しでは、罠で失敗したマスには指せない
+  if (state.checkRetry && posEquals(action.to, state.checkRetry.trap)) return state;
 
   if (action.type === 'move' && isKingSquare(state.board, action.to)) {
     return executeAndFinalize(state, action);
@@ -106,6 +112,15 @@ function handleExecuteMove(state: GameState, action: GameAction): GameState {
   const pitfallTriggered = checkPitfall(state, action);
 
   if (pitfallTriggered) {
+    // C: 王手の応手が罠で失敗したら、罠を見てから 1 回だけ指し直せる
+    if (canRetryCheckAnswer(state, action)) {
+      const opponent = getOpponent(state.currentPlayer);
+      return {
+        ...state,
+        pitfalls: { ...state.pitfalls, [opponent]: null },
+        checkRetry: { trap: action.to, failedAction: action },
+      };
+    }
     // 手を無効化: 盤面変更なし、手番消費
     return finalizeTurn(state, null, true, action);
   }
@@ -152,6 +167,48 @@ function handleAcknowledgePassDevice(state: GameState): GameState {
     ...state,
     phase: { type: 'PITFALL_PLACEMENT' },
   };
+}
+
+// --- 罠ルールの変種（試遊用の比較版） ---
+
+export function getTrapRule(state: Pick<GameState, 'config'>): TrapRule {
+  return state.config.trapRule ?? 'standard';
+}
+
+/** C: 王手されている時の応手が罠にかかり、罠のマス以外に指せる手が残っている */
+function canRetryCheckAnswer(state: GameState, action: GameAction): boolean {
+  if (getTrapRule(state) !== 'checkRetry' || state.checkRetry) return false;
+  if (!isPlayerInCheck(state.board, state.currentPlayer)) return false;
+  return hasActionAvoiding(state, action.to);
+}
+
+function hasActionAvoiding(state: GameState, square: Position): boolean {
+  const player = state.currentPlayer;
+  if (getAllLegalMoves(state.board, player).some(move => !posEquals(move.to, square))) return true;
+  const hand = state.hands[player];
+  return (Object.keys(hand) as Array<keyof typeof hand>).some(kind => (
+    hand[kind] > 0
+    && getLegalDrops(state.board, player, kind).some(to => !posEquals(to, square))
+  ));
+}
+
+/** C の指し直しの記録。罠は発動して公開済み */
+function retryLogFields(state: GameState): Partial<LogEntry> {
+  if (!state.checkRetry) return {};
+  return {
+    rescued: true,
+    pitfallTriggered: true,
+    failedAction: state.checkRetry.failedAction,
+    triggeredPitfall: state.checkRetry.trap,
+    revealedPitfall: state.checkRetry.trap,
+  };
+}
+
+/** D: 王手をかけた手番に置いた罠は消える */
+function voidsOwnPitfall(state: GameState, action: GameAction | null, pitfallTriggered: boolean): boolean {
+  if (getTrapRule(state) !== 'checkVoidsTrap') return false;
+  if (!action || pitfallTriggered) return false;
+  return isPlayerInCheck(state.board, getOpponent(state.currentPlayer));
 }
 
 // --- 実行ヘルパー ---
@@ -250,6 +307,7 @@ function finalizeTurn(
 ): GameState {
   const opponent = getOpponent(state.currentPlayer);
   const ruleProfile = getRuleProfile(state.config.casualMode);
+  const voided = voidsOwnPitfall(state, action, pitfallTriggered);
 
   // ログエントリ作成
   const logEntry: LogEntry = {
@@ -265,6 +323,8 @@ function finalizeTurn(
     revealedPitfall: ruleProfile.revealMissedPitfalls
       ? state.pitfalls[opponent]?.position ?? undefined
       : undefined,
+    ...retryLogFields(state),
+    ...(voided ? { voidedPitfall: true } : {}),
   };
 
   // 落とし穴更新:
@@ -273,7 +333,7 @@ function finalizeTurn(
   const newPitfalls = {
     ...state.pitfalls,
     [opponent]: null, // 相手の落とし穴を消去
-    [state.currentPlayer]: state.pendingPitfall, // 自分の落とし穴を有効化
+    [state.currentPlayer]: voided ? null : state.pendingPitfall, // 自分の落とし穴を有効化（D で王手なら消える）
   };
   const lastPitfallPositionByPlayer = {
     ...state.lastPitfallPositionByPlayer,
@@ -294,6 +354,7 @@ function finalizeTurn(
     pendingPitfall: null,
     lastPitfallPositionByPlayer,
     log: [...state.log, logEntry],
+    checkRetry: null,
   };
 }
 
@@ -314,10 +375,12 @@ function finalizeTurnWithWinner(
     revealedPitfall: ruleProfile.revealMissedPitfalls
       ? state.pitfalls[opponent]?.position ?? undefined
       : undefined,
+    ...retryLogFields(state),
   };
 
   return {
     ...state,
+    checkRetry: null,
     phase: { type: 'GAME_OVER', winner },
     lastPitfallPositionByPlayer: {
       ...state.lastPitfallPositionByPlayer,
@@ -331,7 +394,8 @@ function finalizeTurnWithWinner(
 function resetGame(
   gameMode: 'pvp' | 'pvbot' = 'pvp',
   casualMode: boolean = true,
-  botLevel: BotLevel = 'normal'
+  botLevel: BotLevel = 'normal',
+  trapRule: TrapRule = 'standard'
 ): GameState {
-  return createInitialGameState(gameMode, casualMode, 'gote', botLevel);
+  return createInitialGameState(gameMode, casualMode, 'gote', botLevel, trapRule);
 }
