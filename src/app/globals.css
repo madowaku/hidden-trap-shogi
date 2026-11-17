@@ -382,3 +382,108 @@ body {
 .check-king-pulse {
   animation: check-pulse 1.2s infinite ease-in-out;
 }
+
+/* --- 罠ルール（A/C/D）の比較版 --- */
+
+@keyframes rule-strip-in {
+  0% {
+    opacity: 0.4;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rule-strip-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+  }
+}
+
+.rule-strip {
+  animation: rule-strip-in 220ms ease-out both;
+}
+
+.rule-strip-alert {
+  animation: rule-strip-in 220ms ease-out both, rule-strip-glow 1.4s ease-in-out infinite;
+}
+
+.retry-toast {
+  animation-duration: 2200ms;
+}
+
+@keyframes ending-backdrop-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ending-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ending-headline-in {
+  0% {
+    letter-spacing: 0.4em;
+    opacity: 0;
+  }
+  100% {
+    letter-spacing: 0.02em;
+    opacity: 1;
+  }
+}
+
+/* 王を取った手を一瞬見せてから結果を出す */
+.ending-backdrop {
+  animation: ending-backdrop-in 260ms ease-out 700ms both;
+}
+
+.ending-card {
+  animation: ending-card-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2) 760ms both;
+}
+
+.ending-headline {
+  animation: ending-headline-in 520ms ease-out 900ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rule-strip,
+  .rule-strip-alert,
+  .retry-toast,
+  .ending-backdrop,
+  .ending-card,
+  .ending-headline {
+    animation: none;
+  }
+}
+
+/* 直前の手 */
+.last-move-to {
+  box-shadow: inset 0 0 0 3px rgba(254, 240, 138, 0.85), inset 0 0 18px rgba(253, 224, 71, 0.45);
+}
+
+.last-move-from {
+  box-shadow: inset 0 0 0 2px rgba(254, 240, 138, 0.35);
+  background-image: radial-gradient(circle, rgba(254, 240, 138, 0.28) 0 18%, transparent 20%);
+}
+
+/* C の指し直し中に塞がれたマス */
+.closed-square {
+  background-color: rgba(8, 51, 68, 0.75);
+  box-shadow: inset 0 0 0 3px rgba(165, 243, 252, 0.85), inset 0 0 22px rgba(34, 211, 238, 0.55);
+}

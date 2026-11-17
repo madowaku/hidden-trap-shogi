@@ -22,6 +22,10 @@ type Props = {
   isReviewMode?: boolean;
   compact?: boolean;
   orientation?: BoardOrientation;
+  isLastMoveTo?: boolean;
+  isLastMoveFrom?: boolean;
+  /** C の指し直し中、罠で塞がれたマス */
+  isClosed?: boolean;
   onClick: () => void;
 };
 
@@ -43,6 +47,9 @@ export default function Cell({
   isReviewMode = false,
   compact = false,
   orientation = 'sente',
+  isLastMoveTo = false,
+  isLastMoveFrom = false,
+  isClosed = false,
   onClick,
 }: Props) {
   // チェッカーパターンの背景色
@@ -60,6 +67,9 @@ export default function Cell({
         ${isDark ? 'bg-[#b06b31]' : 'bg-[#c37b39]'}
         ${isSelected ? 'ring-2 ring-yellow-200 ring-inset shadow-[inset_0_0_24px_rgba(250,204,21,0.42)]' : ''}
         ${isLegalMove ? 'legal-move-cell' : ''}
+        ${isLastMoveTo && !isReviewMode ? 'last-move-to' : ''}
+        ${isLastMoveFrom && !isReviewMode ? 'last-move-from' : ''}
+        ${isClosed ? 'closed-square cursor-not-allowed' : ''}
         ${isCheckKing ? 'check-king-pulse ring-2 ring-red-500 ring-inset z-10' : ''}
         ${isReviewMode && reviewTrapState === 'hit' ? 'bg-fuchsia-950/80 ring-2 ring-fuchsia-400/80 ring-inset shadow-[inset_0_0_20px_rgba(217,70,239,0.4)]' : ''}
         ${isReviewMode && reviewTrapState === 'miss' ? 'bg-indigo-950/70 ring-2 ring-indigo-400/70 ring-inset shadow-[inset_0_0_20px_rgba(129,140,248,0.3)]' : ''}
@@ -70,6 +80,14 @@ export default function Cell({
         ${isPitfallBlocked && isPitfallPlacement ? 'cursor-not-allowed bg-stone-950/30' : ''}
       `}
     >
+      {isClosed && (
+        <div
+          aria-label="罠で塞がれたマス"
+          className="closed-square-mark pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
+        >
+          <span className={`${compact ? 'text-xl' : 'text-3xl'} font-black leading-none text-cyan-50 drop-shadow-[0_2px_2px_rgba(0,0,0,0.7)]`}>×</span>
+        </div>
+      )}
       {isPitfallPlacement && !isPitfall && !isPitfallBlocked && (
         <div className="pointer-events-none absolute inset-1 opacity-0 transition group-hover:opacity-100">
           <div className="h-full w-full rounded-sm border border-red-300/40 bg-red-500/10" />
@@ -110,11 +128,11 @@ export default function Cell({
       )}
 
       {isMissedTrapReveal && (
-        <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-          <div className={`trap-miss-cloud rounded-full border-4 border-violet-100/75 bg-violet-300/35 ${compact ? 'h-10 w-10' : 'h-16 w-16'}`} />
-          <div className="absolute rounded-sm border border-violet-100/70 bg-violet-700/75 px-1.5 py-0.5 text-[10px] font-black text-violet-50">
-            不発
-          </div>
+        <div
+          aria-label="不発の罠"
+          className="pointer-events-none absolute right-0 top-0 z-20 rounded-bl border-b border-l border-violet-100/80 bg-violet-950/95 px-0.5 py-px text-[9px] font-black leading-none text-violet-50 shadow-sm"
+        >
+          不発
         </div>
       )}
 

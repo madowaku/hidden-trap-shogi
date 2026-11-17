@@ -11,6 +11,7 @@ import type {
   MovePattern,
   Direction,
   Piece,
+  TrapRule,
 } from './types';
 
 // --- 盤面サイズ ---
@@ -233,7 +234,8 @@ export function createInitialGameState(
   gameMode: 'pvp' | 'pvbot' = 'pvbot',
   casualMode: boolean = true,
   botPlayer: 'sente' | 'gote' = 'gote',
-  botLevel: BotLevel = 'normal'
+  botLevel: BotLevel = 'normal',
+  trapRule: TrapRule = 'standard'
 ): GameState {
   const isBot = gameMode === 'pvbot';
 
@@ -257,6 +259,8 @@ export function createInitialGameState(
       gameMode,
       botLevel,
       botPlayer: isBot ? botPlayer : undefined,
+      // 現行ルールの時は config に書かない（オンライン・既存データと同じ形を保つ）
+      ...(trapRule === 'standard' ? {} : { trapRule }),
     },
     winner: null,
   };

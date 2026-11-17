@@ -97,6 +97,10 @@ export type LogEntry = {
   readonly failedAction?: GameAction; // 罠で無効化された手
   readonly triggeredPitfall?: Position; // 発動した相手の落とし穴位置
   readonly revealedPitfall?: Position; // Casualモード: 公開された相手の落とし穴位置
+  /** C（王手救済）: 王手の応手が罠で失敗し、指し直した。action は指し直した手 */
+  readonly rescued?: boolean;
+  /** D（王手で罠消滅）: 王手をかけたので、この手番に置いた罠は消えた */
+  readonly voidedPitfall?: boolean;
 };
 
 /**
@@ -111,6 +115,21 @@ export type PublicLogEntry = Omit<LogEntry, 'pitfallSet'> & {
 // --- ゲーム設定 ---
 
 export type GameMode = 'pvp' | 'pvbot';
+
+/**
+ * 罠ルール（試遊用の比較版）。
+ * - standard       A: 現行ルール
+ * - checkRetry     C: 王手の応手が罠で失敗したら、罠を見てから 1 回だけ指し直せる
+ * - checkVoidsTrap D: 王手をかけた手番に置いた罠は消える（王手された側に罠はない）
+ * 省略時は standard。オンライン対戦は standard のみ。
+ */
+export type TrapRule = 'standard' | 'checkRetry' | 'checkVoidsTrap';
+
+/** C: 罠で失敗した王手の応手。公開情報（罠はもう発動して消えている） */
+export type CheckRetry = {
+  readonly trap: Position;
+  readonly failedAction: GameAction;
+};
 export type BotLevel = 'easy' | 'normal' | 'hard';
 
 export type GameConfig = {
@@ -118,6 +137,7 @@ export type GameConfig = {
   readonly gameMode: GameMode;
   readonly botLevel: BotLevel;
   readonly botPlayer?: Player; // PvBotモードでBotが担当する側
+  readonly trapRule?: TrapRule;
 };
 
 // --- ゲーム状態 ---
@@ -163,6 +183,9 @@ export type GameState = {
   /** 対局ログ */
   readonly log: LogEntry[];
 
+  /** C: 指し直し中なら、失敗した応手と発動した罠。それ以外は null / 省略 */
+  readonly checkRetry?: CheckRetry | null;
+
   /** ゲーム設定 */
   readonly config: GameConfig;
 
@@ -201,6 +224,7 @@ export type GameView = {
     readonly gote: Hand;
   };
   readonly log: PublicLogEntry[];
+  readonly checkRetry?: CheckRetry | null;
   readonly config: GameConfig;
   readonly winner: Player | null;
   readonly roomPresence?: RoomPresence;

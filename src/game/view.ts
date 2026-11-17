@@ -20,6 +20,8 @@ export function getPlayerView(
     visiblePitfalls: getVisiblePitfalls(state, viewer),
     hands: state.hands,
     log: getPublicLog(state, viewer),
+    // C の指し直し中の罠は発動済みで公開情報
+    ...(state.checkRetry ? { checkRetry: state.checkRetry } : {}),
     config: state.config,
     winner: state.winner,
     roomPresence,

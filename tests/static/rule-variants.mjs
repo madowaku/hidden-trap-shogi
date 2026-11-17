@@ -42,15 +42,17 @@ function scripted({ pitfall = { row: 4, col: 8 }, action, retry = null }) {
 
 // --- 隔離: アプリのルールは変わっていない -------------------------------------------
 
-test('rule variants are research-only: app code never selects a variant', () => {
-  for (const file of ['src/game/reducer.ts', 'src/game/bot.ts', 'src/hooks/useGame.ts', 'src/game/room.ts', 'src/app/page.tsx']) {
+test('B stays research-only; the app picks a rule only from config.trapRule', () => {
+  // A / C / D は試遊用の比較版としてアプリで遊べる（tests/static/playable-rule-modes.mjs）。
+  // B（王の移動は罠無効）は研究用のまま、アプリからは選べない。
+  for (const file of ['src/game/reducer.ts', 'src/game/bot.ts', 'src/hooks/useGame.ts', 'src/game/room.ts', 'src/app/page.tsx', 'src/game/types.ts']) {
     const source = readFileSync(resolve(root, file), 'utf8');
-    assert.doesNotMatch(source, /kingImmune|checkRetry|checkVoidsTrap|TrapRuleVariant/, file);
+    assert.doesNotMatch(source, /kingImmune/, file);
   }
-  // Bot の呼び出し側は、エンジンに rules を渡していない（＝常に現行ルール）
-  for (const file of ['src/game/bot.ts', 'src/hooks/useGame.ts', 'src/game/room.ts']) {
-    assert.doesNotMatch(readFileSync(resolve(root, file), 'utf8'), /\brules\s*:/, file);
-  }
+  // Bot はエンジンに渡すルールを対局の設定から取る（勝手に別ルールで読まない）
+  assert.match(readFileSync(resolve(root, 'src/game/bot.ts'), 'utf8'), /rules: state\.config\.trapRule \?\? 'standard'/);
+  // オンライン対戦は現行ルールのみ
+  assert.doesNotMatch(readFileSync(resolve(root, 'src/game/room.ts'), 'utf8'), /trapRule|checkRetry|checkVoidsTrap/);
 });
 
 test('engine default is the standard rule set', () => {

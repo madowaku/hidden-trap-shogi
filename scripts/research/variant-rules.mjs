@@ -145,6 +145,7 @@ export function playTurn(state, variant, agent) {
     if (retry) {
       next = execute(withoutTrap(placed, opponent), retry.action);
       next = patchLastLog(next, {
+        rescued: true,
         failedAction: action,
         pitfallTriggered: true,
         triggeredPitfall: trap,
