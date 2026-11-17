@@ -1,12 +1,12 @@
 'use client';
 
-import type { LogEntry } from '@/game/types';
+import type { PublicLogEntry } from '@/game/types';
 import { PIECE_KANJI } from '@/game/constants';
 import { getTrapReactionKind } from '@/game/reaction';
 import type { Viewer } from '@/game/types';
 
 type Props = {
-  log: LogEntry[];
+  log: PublicLogEntry[];
   winner?: 'sente' | 'gote' | null;
   language?: 'ja' | 'en';
   viewer?: Viewer;
@@ -103,7 +103,7 @@ export default function GameLog({ log, winner, language = 'ja', viewer = 'specta
 }
 
 function getLogStyle(
-  entry: LogEntry,
+  entry: PublicLogEntry,
   isVictory: boolean,
   trapReactionKind: ReturnType<typeof getTrapReactionKind>
 ): string {
@@ -123,7 +123,7 @@ function formatPos(pos: { row: number; col: number }): string {
 }
 
 function formatFailedAction(
-  action: NonNullable<LogEntry['failedAction']>,
+  action: NonNullable<PublicLogEntry['failedAction']>,
   language: 'ja' | 'en'
 ): string {
   if (action.type === 'move') {

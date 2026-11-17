@@ -99,6 +99,15 @@ export type LogEntry = {
   readonly revealedPitfall?: Position; // Casualモード: 公開された相手の落とし穴位置
 };
 
+/**
+ * GameView で配るログ。
+ * 相手が置いた罠（pitfallSet）は、次の手番で公開・発動されて誰でも知っている時だけ入る。
+ * 自分のログ・終局後のログは LogEntry と同じ内容になる。
+ */
+export type PublicLogEntry = Omit<LogEntry, 'pitfallSet'> & {
+  readonly pitfallSet?: Position;
+};
+
 // --- ゲーム設定 ---
 
 export type GameMode = 'pvp' | 'pvbot';
@@ -191,7 +200,7 @@ export type GameView = {
     readonly sente: Hand;
     readonly gote: Hand;
   };
-  readonly log: LogEntry[];
+  readonly log: PublicLogEntry[];
   readonly config: GameConfig;
   readonly winner: Player | null;
   readonly roomPresence?: RoomPresence;

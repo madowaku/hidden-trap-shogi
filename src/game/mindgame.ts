@@ -19,7 +19,7 @@
 //   このファイルは GameView だけを入力にする。相手の未公開罠は読まない。
 //   ログから使うのは「公開・発動済みの相手罠」と「自分が置いた罠」だけ。
 
-import type { AnyPieceKind, GameAction, GameView, LogEntry, Piece, Player, Position } from './types';
+import type { AnyPieceKind, GameAction, GameView, Piece, Player, Position, PublicLogEntry } from './types';
 import { createInitialBoard } from './constants';
 
 // --- 内部表現 ---------------------------------------------------------------
@@ -1008,7 +1008,7 @@ function exploitAsTrapper(analysis: RootAnalysis, habits: OpponentHabits): numbe
 
 // --- 公開情報の読み取り -----------------------------------------------------
 
-function lastEntryOf(log: readonly LogEntry[], player: Player): LogEntry | null {
+function lastEntryOf(log: readonly PublicLogEntry[], player: Player): PublicLogEntry | null {
   for (let i = log.length - 1; i >= 0; i--) {
     if (log[i].player === player) return log[i];
   }
@@ -1030,7 +1030,7 @@ function knownSafeSquare(view: GameView, mover: Player): number {
 /** 自分が直前に置いた罠マス（今回は置けない）。自分のログだけを見る */
 function ownLastTrapSquare(view: GameView, player: Player): number {
   const entry = lastEntryOf(view.log, player);
-  return entry ? toSquare(entry.pitfallSet) : -1;
+  return entry?.pitfallSet ? toSquare(entry.pitfallSet) : -1;
 }
 
 // --- 公開API ---------------------------------------------------------------

@@ -1,11 +1,11 @@
-import type { LogEntry, Viewer } from './types';
+import type { PublicLogEntry, Viewer } from './types';
 
 export type TrapReactionKind =
   | 'player_trapped'
   | 'opponent_trapped';
 
 export function getTrapReactionKind(
-  entry: LogEntry | null | undefined,
+  entry: PublicLogEntry | null | undefined,
   viewer: Viewer
 ): TrapReactionKind | null {
   if (!entry?.pitfallTriggered) return null;

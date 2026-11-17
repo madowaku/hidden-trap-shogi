@@ -18,7 +18,7 @@ import { getTrapReactionKind } from '@/game/reaction';
 import { getPlayerView } from '@/game/view';
 import type { BoardOrientation } from '@/game/orientation';
 import type { EngineCandidate, SearchEngine } from '@/game/search-engine';
-import type { BotLevel, BotMoveDebugSummary, GameMode, LogEntry, MoveAction, Phase, PieceKind, Player, Position, UISelection, Viewer } from '@/game/types';
+import type { BotLevel, BotMoveDebugSummary, GameMode, MoveAction, Phase, PieceKind, Player, Position, PublicLogEntry, UISelection, Viewer } from '@/game/types';
 
 type Language = 'ja' | 'en';
 type InviteCopyStatus = 'idle' | 'copied' | 'failed';
@@ -2474,10 +2474,10 @@ function findKingSquares(board: Parameters<typeof isKingSquare>[0]): Position[] 
   return positions;
 }
 
-function findLastPitfallPosition(log: LogEntry[], player: LogEntry['player']): Position | null {
+function findLastPitfallPosition(log: PublicLogEntry[], player: PublicLogEntry['player']): Position | null {
   for (let index = log.length - 1; index >= 0; index--) {
     const entry = log[index];
-    if (entry.player === player) return entry.pitfallSet;
+    if (entry.player === player) return entry.pitfallSet ?? null;
   }
   return null;
 }
@@ -2486,12 +2486,13 @@ function isBlockedPitfallSquare(blockedSquares: Position[], position: Position):
   return blockedSquares.some((blocked) => posEquals(blocked, position));
 }
 
-function buildTrapHistory(log: LogEntry[]) {
+function buildTrapHistory(log: PublicLogEntry[]) {
   return log.map((entry) => ({
     turn: entry.turn,
     player: entry.player,
     playerLabel: entry.player === 'sente' ? '先手' : '後手',
-    setAt: formatPos(entry.pitfallSet),
+    // 対局中の相手の未公開罠はサーバーから届かない（終局後は全て届く）
+    setAt: entry.pitfallSet ? formatPos(entry.pitfallSet) : '—',
     triggeredAt: entry.triggeredPitfall ? formatPos(entry.triggeredPitfall) : null,
     revealedAt: entry.revealedPitfall ? formatPos(entry.revealedPitfall) : null,
     result: entry.pitfallTriggered ? 'hit' : 'miss',
