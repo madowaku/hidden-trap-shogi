@@ -641,19 +641,14 @@ export function solveTrapGame(
 // 探索内部用: 価値だけを返す高速版（solveTrapGame と同じ値になる）
 const scratchValues = new Float64Array(SQUARES);
 
-function trapGameValue(bestByTo: Float64Array, failValue: number, safeSquare: number): number {
-  let best = -2;
-  let safeValue = -2;
+function trapGameValue(bestByTo: Float64Array, failValue: number, safeValue: number): number {
+  let best = safeValue;
   let n = 0;
   for (let sq = 0; sq < SQUARES; sq++) {
     const v = bestByTo[sq];
     if (v <= -2) continue;
     if (v > best) best = v;
-    if (sq === safeSquare) {
-      if (v > safeValue) safeValue = v;
-    } else {
-      scratchValues[n++] = v;
-    }
+    scratchValues[n++] = v;
   }
   if (best <= -2) return failValue;
 
@@ -681,13 +676,109 @@ function trapGameValue(bestByTo: Float64Array, failValue: number, safeSquare: nu
   return floor;
 }
 
+/**
+ * 研究用（C）: 王手の応手が罠で失敗しても、罠を見てから指し直せる時の価値。
+ * 罠側は一番おいしい着地点に罠を置くのが最善で、指す側は 2 番目に良い手で受ける。
+ */
+function retryGameValue(bestByTo: Float64Array, failValue: number, safeValue: number): number {
+  let top = -2;
+  let second = -2;
+  for (let sq = 0; sq < SQUARES; sq++) {
+    const v = bestByTo[sq];
+    if (v <= -2) continue;
+    if (v > top) {
+      second = top;
+      top = v;
+    } else if (v > second) {
+      second = v;
+    }
+  }
+  if (top <= -2) return safeValue > -2 ? safeValue : failValue;
+  if (safeValue >= top) return safeValue;
+  const rest = second > safeValue ? second : safeValue;
+  return rest > -2 ? rest : failValue;
+}
+
+/** solveTrapGame の C 版（王手中の指し直しあり） */
+export function solveRetryGame(
+  options: readonly TrapGameOption[],
+  failValue: number
+): TrapGameSolution {
+  const count = options.length;
+  const moverMix = new Array<number>(count).fill(0);
+  const trapMix = new Array<number>(count).fill(0);
+  if (count === 0) return { value: failValue, moverMix, trapMix };
+
+  let top = 0;
+  for (let i = 1; i < count; i++) {
+    if (options[i].value > options[top].value) top = i;
+  }
+  moverMix[top] = 1;
+  if (!options[top].trappable) return { value: options[top].value, moverMix, trapMix };
+
+  trapMix[top] = 1;
+  let rest = Number.NEGATIVE_INFINITY;
+  for (let i = 0; i < count; i++) {
+    if (i !== top && options[i].value > rest) rest = options[i].value;
+  }
+  return { value: Number.isFinite(rest) ? rest : failValue, moverMix, trapMix };
+}
+
 // --- 罠を織り込んだ探索 -----------------------------------------------------
 
 const MAX_PLY = 5;
 
+// --- 研究用: 罠ルールの変種 ---------------------------------------------------
+//
+// アプリは常に 'standard'（現行ルール）で動く。ほかは scripts/research の比較実験専用で、
+// reducer には入っていない（ルールの適用は scripts/research/variant-rules.mjs）。
+
+export type TrapRuleVariant =
+  /** A: 現行ルール */
+  | 'standard'
+  /** B: 王の移動は罠にかからない */
+  | 'kingImmune'
+  /** C: 王手されている時の応手が罠で失敗したら、罠を見てから指し直せる */
+  | 'checkRetry'
+  /** D: 王手をかけた手番に置いた罠は無効（王手された側には罠がない） */
+  | 'checkVoidsTrap';
+
+type RuleFlags = {
+  readonly kingImmune: boolean;
+  readonly checkRetry: boolean;
+  readonly checkVoids: boolean;
+};
+
+const RULE_FLAGS: Record<TrapRuleVariant, RuleFlags> = {
+  standard: { kingImmune: false, checkRetry: false, checkVoids: false },
+  kingImmune: { kingImmune: true, checkRetry: false, checkVoids: false },
+  checkRetry: { kingImmune: false, checkRetry: true, checkVoids: false },
+  checkVoidsTrap: { kingImmune: false, checkRetry: false, checkVoids: true },
+};
+
+function needsCheckTest(rules: RuleFlags): boolean {
+  return rules.checkRetry || rules.checkVoids;
+}
+
+/** side の王が相手の駒に当たっているか */
+function isInCheck(b: Int8Array, side: Side): boolean {
+  const king = findKingSquare(b, side);
+  if (king < 0) return false;
+  const enemy = (-side) as Side;
+  buildAttackMap(b, enemy);
+  return attackCount[handIndex(enemy)][king] > 0;
+}
+
+/** makeMove の前に呼ぶ */
+function isKingMove(b: Int8Array, m: number): boolean {
+  const from = moveFrom(m);
+  return from < DROP_BASE && (b[from] === KING || b[from] === -KING);
+}
+
 type SearchContext = {
   /** ply ごとの「罠を置けないと分かっているマス」。-1 = なし */
   readonly safeSquareByPly: number[];
+  readonly rules: RuleFlags;
   nodes: number;
 };
 
@@ -714,20 +805,37 @@ function search(pos: Pos, side: Side, depth: number, ply: number, ctx: SearchCon
     if (moveTo(moves[i]) === enemyKing) return WIN - ply * 0.001;
   }
 
+  const rules = ctx.rules;
+  const inCheck = needsCheckTest(rules) && isInCheck(pos.b, side);
+  const safeSquare = ctx.safeSquareByPly[ply] ?? -1;
   const bestByTo = new Float64Array(SQUARES).fill(-2);
+  let safeValue = -2;
   const other = (-side) as Side;
   for (let i = 0; i < moves.length; i++) {
     const m = moves[i];
+    const to = moveTo(m);
+    const kingMove = rules.kingImmune && isKingMove(pos.b, m);
     const captured = makeMove(pos, m, side);
     const v = -search(pos, other, depth - 1, ply + 1, ctx);
     unmakeMove(pos, m, side, captured);
-    const to = moveTo(m);
-    if (v > bestByTo[to]) bestByTo[to] = v;
+    if (to === safeSquare || kingMove) {
+      if (v > safeValue) safeValue = v;
+    } else if (v > bestByTo[to]) {
+      bestByTo[to] = v;
+    }
+  }
+
+  if (inCheck && rules.checkVoids) {
+    // D: 王手をかけた側の罠は消えているので、普通に最善手を指せる
+    let best = safeValue;
+    for (let sq = 0; sq < SQUARES; sq++) if (bestByTo[sq] > best) best = bestByTo[sq];
+    if (best > -2) return best;
   }
 
   // 罠にかかる = 何もせず相手番になる
   const failValue = -search(pos, other, depth - 1, ply + 1, ctx);
-  return trapGameValue(bestByTo, failValue, ctx.safeSquareByPly[ply] ?? -1);
+  if (inCheck && rules.checkRetry) return retryGameValue(bestByTo, failValue, safeValue);
+  return trapGameValue(bestByTo, failValue, safeValue);
 }
 
 type RootOption = {
@@ -740,6 +848,8 @@ type RootOption = {
 type RootAnalysis = {
   readonly options: RootOption[];
   readonly failValue: number;
+  /** 手番側が王手されているか（C / D のときだけ判定。それ以外は常に false） */
+  readonly inCheck: boolean;
   readonly solution: TrapGameSolution;
   readonly nodes: number;
 };
@@ -756,20 +866,34 @@ function analyzeRoot(
   safeSquare: number,
   replySafeSquare: number,
   refineTop: number,
-  depth: number
+  depth: number,
+  rules: RuleFlags = RULE_FLAGS.standard,
+  revealedTrap = -1
 ): RootAnalysis {
-  const ctx: SearchContext = { safeSquareByPly: [safeSquare, replySafeSquare], nodes: 0 };
+  const ctx: SearchContext = { safeSquareByPly: [safeSquare, replySafeSquare], rules, nodes: 0 };
   const other = (-side) as Side;
   const enemyKing = findKingSquare(pos.b, other);
+  const inCheck = needsCheckTest(rules) && isInCheck(pos.b, side);
+  // この手番は罠が効かない: 指し直し中（罠は公開済み）か、D で王手されている
+  const noTrap = revealedTrap >= 0 || (inCheck && rules.checkVoids);
   const moves: number[] = [];
   generateMoves(pos, side, DROPS_ALL, moves);
 
-  // 1) 全ての手を浅く評価し、着地点ごとの最善手を残す
-  const bestMoveByTo = new Int32Array(SQUARES).fill(-1);
-  const valueByTo = new Float64Array(SQUARES).fill(-2);
+  // 候補は「着地点」ごと。B では王の移動を別の候補（罠にかからない）にする
+  const keyCount = SQUARES * 2;
+  const isTrappableKey = (key: number) => (
+    !noTrap && key < SQUARES && key !== enemyKing && key !== safeSquare
+  );
+  const alwaysRefine = (key: number) => key === enemyKing || (!noTrap && !isTrappableKey(key));
+
+  // 1) 全ての手を浅く評価し、候補ごとの最善手を残す
+  const bestMoveByKey = new Int32Array(keyCount).fill(-1);
+  const valueByKey = new Float64Array(keyCount).fill(-2);
   for (let i = 0; i < moves.length; i++) {
     const m = moves[i];
     const to = moveTo(m);
+    if (to === revealedTrap) continue;
+    const key = to + (rules.kingImmune && isKingMove(pos.b, m) ? SQUARES : 0);
     let v: number;
     if (to === enemyKing) {
       v = WIN;
@@ -778,51 +902,53 @@ function analyzeRoot(
       v = -search(pos, other, 0, 1, ctx);
       unmakeMove(pos, m, side, captured);
     }
-    if (v > valueByTo[to]) {
-      valueByTo[to] = v;
-      bestMoveByTo[to] = m;
+    if (v > valueByKey[key]) {
+      valueByKey[key] = v;
+      bestMoveByKey[key] = m;
     }
   }
 
   let candidates: number[] = [];
-  for (let sq = 0; sq < SQUARES; sq++) {
-    if (bestMoveByTo[sq] >= 0) candidates.push(sq);
+  for (let key = 0; key < keyCount; key++) {
+    if (bestMoveByKey[key] >= 0) candidates.push(key);
   }
-  const byValue = (a: number, c: number) => valueByTo[c] - valueByTo[a] || a - c;
+  const byValue = (a: number, c: number) => valueByKey[c] - valueByKey[a] || a - c;
   candidates.sort(byValue);
 
-  // 2) 上位の着地点だけ、相手の応手（こちらの罠込み）まで読む。
+  // 2) 上位の候補だけ、相手の応手（こちらの罠込み）まで読む。
   //    読みを 1 段深くするたびに候補を絞る。
   let keep = refineTop;
   for (let level = 2; level <= depth; level++) {
     const kept: number[] = [];
     for (let rank = 0; rank < candidates.length; rank++) {
-      const to = candidates[rank];
-      if (rank >= keep && to !== enemyKing && to !== safeSquare) continue;
-      if (to !== enemyKing) {
-        const m = bestMoveByTo[to];
+      const key = candidates[rank];
+      if (rank >= keep && !alwaysRefine(key)) continue;
+      if (key !== enemyKing) {
+        const m = bestMoveByKey[key];
         const captured = makeMove(pos, m, side);
-        valueByTo[to] = -search(pos, other, level - 1, 1, ctx);
+        valueByKey[key] = -search(pos, other, level - 1, 1, ctx);
         unmakeMove(pos, m, side, captured);
       }
-      kept.push(to);
+      kept.push(key);
     }
     candidates = kept.sort(byValue);
     keep = Math.max(4, Math.ceil(keep * 0.6));
   }
 
-  const options = candidates.map((to): RootOption => ({
-    to,
-    move: bestMoveByTo[to],
-    value: valueByTo[to],
-    trappable: to !== enemyKing && to !== safeSquare,
+  const options = candidates.map((key): RootOption => ({
+    to: key % SQUARES,
+    move: bestMoveByKey[key],
+    value: valueByKey[key],
+    trappable: isTrappableKey(key),
   }));
   const failValue = -search(pos, other, Math.max(0, depth - 1), 1, ctx);
+  const retry = inCheck && rules.checkRetry && revealedTrap < 0;
 
   return {
     options,
     failValue,
-    solution: solveTrapGame(options, failValue),
+    inCheck,
+    solution: retry ? solveRetryGame(options, failValue) : solveTrapGame(options, failValue),
     nodes: ctx.nodes,
   };
 }
@@ -858,8 +984,12 @@ function initialPos(): Pos {
 }
 
 /** その局面で「一番おいしい着地点」と、均衡での罠確率・着手確率を浅く見積もる */
-function shallowBest(pos: Pos, side: Side): { to: number; trapProbability: number; playProbability: number } | null {
-  const analysis = analyzeRoot(pos, side, -1, -1, 0, 1);
+function shallowBest(
+  pos: Pos,
+  side: Side,
+  rules: RuleFlags
+): { to: number; trapProbability: number; playProbability: number } | null {
+  const analysis = analyzeRoot(pos, side, -1, -1, 0, 1, rules);
   let best = -1;
   for (let i = 0; i < analysis.options.length; i++) {
     if (!analysis.options[i].trappable) return null; // 王が取れる局面は癖の観測に使わない
@@ -883,7 +1013,12 @@ function shallowBest(pos: Pos, side: Side): { to: number; trapProbability: numbe
  *   - こちらの手番で公開・発動した相手の罠
  * 相手ログの pitfallSet（まだ公開されていない可能性がある）は読まない。
  */
-export function readOpponentHabits(view: GameView, player: Player): OpponentHabits {
+export function readOpponentHabits(
+  view: GameView,
+  player: Player,
+  variant: TrapRuleVariant = 'standard'
+): OpponentHabits {
+  const rules = RULE_FLAGS[variant];
   if (view.log.length === 0) return NO_HABITS;
   const pos = initialPos();
   const me = sideOf(player);
@@ -903,14 +1038,14 @@ export function readOpponentHabits(view: GameView, player: Player): OpponentHabi
     } else if (side === me) {
       const knownTrap = entry.triggeredPitfall ?? entry.revealedPitfall;
       if (knownTrap) {
-        const best = shallowBest(pos, side);
+        const best = shallowBest(pos, side, rules);
         if (best) {
           trapSamples += 1;
           trapSurprise += (toSquare(knownTrap) === best.to ? 1 : 0) - best.trapProbability;
         }
       }
     } else if (attempted) {
-      const best = shallowBest(pos, side);
+      const best = shallowBest(pos, side, rules);
       if (best) {
         moveSamples += 1;
         greedSurprise += (toSquare(attempted.to) === best.to ? 1 : 0) - best.playProbability;
@@ -1046,6 +1181,10 @@ export type MindGameOptions = {
   readonly adaptive?: boolean;
   /** 自分が直前に置いた罠マス。省略時はログから求める */
   readonly ownLastTrap?: Position | null;
+  /** 研究用: 罠ルールの変種。既定は現行ルール。アプリからは渡さない */
+  readonly rules?: TrapRuleVariant;
+  /** 研究用（C）: 罠で失敗した後の指し直し。このマスには指さず、もう罠はないものとして読む */
+  readonly revealedTrap?: Position | null;
 };
 
 const DEFAULT_REFINE_TOP = 14;
@@ -1129,23 +1268,26 @@ function decideMoveInternal(
   pos: Pos,
   player: Player,
   options: MindGameOptions
-): { decision: MindGameMoveDecision; chosen: RootOption } {
+): { decision: MindGameMoveDecision; chosen: RootOption; analysis: RootAnalysis } {
   const side = sideOf(player);
   const random = options.random ?? Math.random;
 
+  const variant = options.rules ?? 'standard';
   const analysis = analyzeRoot(
     pos,
     side,
     knownSafeSquare(view, player),
     resolveOwnLastTrap(view, player, options),
     options.refineTop ?? DEFAULT_REFINE_TOP,
-    options.depth ?? DEFAULT_DEPTH
+    options.depth ?? DEFAULT_DEPTH,
+    RULE_FLAGS[variant],
+    options.revealedTrap ? toSquare(options.revealedTrap) : -1
   );
   if (analysis.options.length === 0) {
     throw new Error('No legal moves available for mind game bot');
   }
 
-  const habits = options.adaptive === false ? NO_HABITS : readOpponentHabits(view, player);
+  const habits = options.adaptive === false ? NO_HABITS : readOpponentHabits(view, player, variant);
   const playWeights = exploitAsMover(analysis, habits);
   let weightTotal = 0;
   for (const weight of playWeights) weightTotal += weight;
@@ -1163,6 +1305,7 @@ function decideMoveInternal(
 
   return {
     chosen,
+    analysis,
     decision: {
       action: candidates[index].action,
       candidates,
@@ -1192,7 +1335,8 @@ export function planMindGameTurn(view: GameView, options: MindGameOptions = {}):
   const other = (-side) as Side;
   const random = options.random ?? Math.random;
   const pos = posFromView(view);
-  const { decision, chosen } = decideMoveInternal(view, pos, player, options);
+  const { decision, chosen, analysis: own } = decideMoveInternal(view, pos, player, options);
+  const rules = RULE_FLAGS[options.rules ?? 'standard'];
 
   const ownLastTrap = resolveOwnLastTrap(view, player, options);
   const failProbability = decision.chosenTrapProbability;
@@ -1205,7 +1349,7 @@ export function planMindGameTurn(view: GameView, options: MindGameOptions = {}):
     if (probability <= 0.02) return;
     // 相手から見て: 相手の安全マス = こちらが今回置けないマス。
     // その次のこちらの番の安全マスは、まだ分からないので -1。
-    const analysis = analyzeRoot(pos, other, ownLastTrap, -1, refineTop, depth);
+    const analysis = analyzeRoot(pos, other, ownLastTrap, -1, refineTop, depth, rules);
     const equilibriumMix = analysis.solution.trapMix;
     let assigned = 0;
     for (const p of equilibriumMix) assigned += p;
@@ -1233,8 +1377,19 @@ export function planMindGameTurn(view: GameView, options: MindGameOptions = {}):
   const winsNow = captured !== 0 && Math.abs(captured) === KING;
   if (!winsNow) addScenario(1 - failProbability);
   unmakeMove(pos, chosen.move, side, captured);
-  // 自分の手が罠で失敗した場合（盤面はそのまま）
-  addScenario(winsNow ? 1 : failProbability);
+
+  // C で王手されている: 罠にかかっても 2 番目の手で指し直すので、その局面に罠を合わせる
+  const retryMove = own.inCheck && rules.checkRetry
+    ? own.options.find(option => option.move !== chosen.move)?.move
+    : undefined;
+  if (retryMove !== undefined && !winsNow) {
+    const retryCaptured = makeMove(pos, retryMove, side);
+    addScenario(failProbability);
+    unmakeMove(pos, retryMove, side, retryCaptured);
+  } else {
+    // 自分の手が罠で失敗した場合（盤面はそのまま）
+    addScenario(winsNow ? 1 : failProbability);
+  }
 
   let decoyTotal = 0;
   let weightTotal = 0;

@@ -1,0 +1,106 @@
+{
+  "variant": "kingImmune",
+  "label": "B: 王の移動は罠無効",
+  "games": 400,
+  "draws": 12,
+  "winsByName": {
+    "mind": 388
+  },
+  "senteWinRate": 0.515,
+  "endings": {
+    "roulette": 168,
+    "hopeless": 69,
+    "mate": 80,
+    "trap-mate": 71,
+    "draw": 12
+  },
+  "endingShare": {
+    "roulette": 0.42,
+    "hopeless": 0.172,
+    "mate": 0.2,
+    "trap-mate": 0.177,
+    "draw": 0.03
+  },
+  "plies": {
+    "p10": 45,
+    "median": 88,
+    "p90": 166,
+    "mean": 100.9
+  },
+  "checksPerGame": 10.15,
+  "checkDeathRate": 0.084,
+  "checkDeathByDestinations": {
+    "0": {
+      "checks": 80,
+      "died": 80,
+      "deathRate": 1
+    },
+    "1": {
+      "checks": 314,
+      "died": 78,
+      "deathRate": 0.248
+    },
+    "2": {
+      "checks": 665,
+      "died": 46,
+      "deathRate": 0.069
+    },
+    "3": {
+      "checks": 849,
+      "died": 40,
+      "deathRate": 0.047
+    },
+    "4": {
+      "checks": 931,
+      "died": 53,
+      "deathRate": 0.057
+    },
+    "5+": {
+      "checks": 1220,
+      "died": 42,
+      "deathRate": 0.034
+    }
+  },
+  "trapHitsPerPly": 0.141,
+  "events": {
+    "kingImmune": 524,
+    "retry": 0,
+    "voided": 0
+  },
+  "leadChangesPerGame": 2.08,
+  "comebackRate": 0.593,
+  "decidedAtShare": {
+    "median": 0.792,
+    "p25": 0.5287356321839081
+  },
+  "dilemmaRate": 0.235,
+  "trapPressure": 0.151,
+  "moveEntropyBits": 0.74,
+  "trapEntropyBits": 0.66,
+  "openingUniqueness": 0.892,
+  "finishers": {
+    "rook": 59,
+    "knight": 35,
+    "promoted_rook": 45,
+    "gold": 60,
+    "promoted_knight": 9,
+    "bishop": 45,
+    "promoted_bishop": 47,
+    "promoted_silver": 6,
+    "silver": 32,
+    "lance": 24,
+    "pawn": 14,
+    "promoted_lance": 9,
+    "promoted_pawn": 3
+  },
+  "finisherEntropyBits": 3.35,
+  "roulette": {
+    "games": 239,
+    "balancedShare": 0.029,
+    "meanLoserValue": -0.9
+  },
+  "agents": "mind,mind",
+  "casual": true,
+  "seed": 30000,
+  "seconds": 196.7
+}

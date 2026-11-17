@@ -1,0 +1,53 @@
+{
+  "variant": "standard",
+  "label": "A: 現行ルール",
+  "games": 400,
+  "draws": 400,
+  "winsByName": {
+    "hard-old": 0
+  },
+  "senteWinRate": null,
+  "endings": {
+    "draw": 400
+  },
+  "endingShare": {
+    "draw": 1
+  },
+  "plies": {
+    "p10": 300,
+    "median": 300,
+    "p90": 300,
+    "mean": 300
+  },
+  "checksPerGame": 0,
+  "checkDeathRate": null,
+  "checkDeathByDestinations": {},
+  "trapHitsPerPly": 0.008,
+  "events": {
+    "kingImmune": 0,
+    "retry": 0,
+    "voided": 0
+  },
+  "leadChangesPerGame": null,
+  "comebackRate": null,
+  "decidedAtShare": {
+    "median": null,
+    "p25": null
+  },
+  "dilemmaRate": null,
+  "trapPressure": null,
+  "moveEntropyBits": null,
+  "trapEntropyBits": null,
+  "openingUniqueness": 0.005,
+  "finishers": {},
+  "finisherEntropyBits": 0,
+  "roulette": {
+    "games": 0,
+    "balancedShare": null,
+    "meanLoserValue": null
+  },
+  "agents": "hard-old,hard-old",
+  "casual": true,
+  "seed": 50000,
+  "seconds": 16.2
+}

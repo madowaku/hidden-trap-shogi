@@ -1,0 +1,48 @@
+{
+  "variant": "standard",
+  "games": 150,
+  "all": {
+    "checks": 532,
+    "predicted": 0.342,
+    "placed": 0.279,
+    "observed": 0.273
+  },
+  "byDestinations": {
+    "0": {
+      "checks": 1,
+      "predicted": 0,
+      "placed": 0.125,
+      "observed": 0
+    },
+    "1": {
+      "checks": 55,
+      "predicted": 0.982,
+      "placed": 0.699,
+      "observed": 0.636
+    },
+    "2": {
+      "checks": 146,
+      "predicted": 0.352,
+      "placed": 0.332,
+      "observed": 0.301
+    },
+    "3": {
+      "checks": 156,
+      "predicted": 0.244,
+      "placed": 0.192,
+      "observed": 0.179
+    },
+    "4": {
+      "checks": 129,
+      "predicted": 0.242,
+      "placed": 0.199,
+      "observed": 0.24
+    },
+    "5+": {
+      "checks": 45,
+      "predicted": 0.16,
+      "placed": 0.127,
+      "observed": 0.156
+    }
+  }
+}

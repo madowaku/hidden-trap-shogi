@@ -1,0 +1,116 @@
+{
+  "size": "3x4",
+  "states": 44900,
+  "gamma": 0.99,
+  "games": 20000,
+  "variants": {
+    "none": {
+      "iterations": 13,
+      "startValue": 0,
+      "decisiveStateShare": 0.866,
+      "decidedGames": 0,
+      "senteWinRate": null,
+      "endings": {
+        "draw": 20000
+      },
+      "endingShareOfDecided": {},
+      "plies": {
+        "median": 200,
+        "p90": 200
+      },
+      "checksPerGame": 66,
+      "seconds": 20.6
+    },
+    "standard": {
+      "iterations": 699,
+      "startValue": 0.1423,
+      "decisiveStateShare": 0.87,
+      "decidedGames": 19680,
+      "senteWinRate": 0.571,
+      "endings": {
+        "trap-mate": 11556,
+        "roulette": 5793,
+        "mate": 1155,
+        "zugzwang": 1176,
+        "draw": 320
+      },
+      "endingShareOfDecided": {
+        "trap-mate": 0.587,
+        "roulette": 0.294,
+        "mate": 0.059,
+        "zugzwang": 0.06
+      },
+      "plies": {
+        "median": 8,
+        "p90": 14
+      },
+      "checksPerGame": 1.61,
+      "seconds": 31.9
+    },
+    "kingImmune": {
+      "iterations": 58,
+      "startValue": 0.0052,
+      "decisiveStateShare": 0.785,
+      "decidedGames": 584,
+      "senteWinRate": 0.596,
+      "endings": {
+        "draw": 19416,
+        "mate": 121,
+        "trap-mate": 378,
+        "zugzwang": 85
+      },
+      "endingShareOfDecided": {
+        "mate": 0.207,
+        "trap-mate": 0.647,
+        "zugzwang": 0.146
+      },
+      "plies": {
+        "median": 200,
+        "p90": 200
+      },
+      "checksPerGame": 5.72,
+      "seconds": 30.3
+    },
+    "checkRetry": {
+      "iterations": 953,
+      "startValue": 0.1358,
+      "decisiveStateShare": 0.872,
+      "decidedGames": 15052,
+      "senteWinRate": 0.594,
+      "endings": {
+        "trap-mate": 13615,
+        "zugzwang": 926,
+        "draw": 4948,
+        "mate": 511
+      },
+      "endingShareOfDecided": {
+        "trap-mate": 0.905,
+        "zugzwang": 0.062,
+        "mate": 0.034
+      },
+      "plies": {
+        "median": 10,
+        "p90": 200
+      },
+      "checksPerGame": 1.52,
+      "seconds": 57.1
+    },
+    "checkVoidsTrap": {
+      "iterations": 258,
+      "startValue": 0,
+      "decisiveStateShare": 0.789,
+      "decidedGames": 0,
+      "senteWinRate": null,
+      "endings": {
+        "draw": 20000
+      },
+      "endingShareOfDecided": {},
+      "plies": {
+        "median": 200,
+        "p90": 200
+      },
+      "checksPerGame": 2,
+      "seconds": 31
+    }
+  }
+}
