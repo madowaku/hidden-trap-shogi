@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "a": "hard",
+    "b": "hard-old",
+    "games": 1000,
+    "draws": 0,
+    "winRateA": 0.862,
+    "winRateA95": [
+      0.841,
+      0.883
+    ],
+    "senteWinRate": 0.49,
+    "turns": {
+      "median": 29,
+      "p10": 15,
+      "p90": 58
+    },
+    "endings": {
+      "defense-trapped (loser: hard-old)": 861,
+      "king-left-hanging (loser: hard)": 134,
+      "defense-trapped (loser: hard)": 4,
+      "king-left-hanging (loser: hard-old)": 1
+    },
+    "leadChangesPerGame": 0,
+    "hard": {
+      "wins": 862,
+      "winsAsSente": 426,
+      "gamesAsSente": 500,
+      "trappedRate": 0.09714832307048485,
+      "dilemmaRate": null,
+      "expectedTrapRisk": null
+    },
+    "hard-old": {
+      "wins": 138,
+      "winsAsSente": 64,
+      "gamesAsSente": 500,
+      "trappedRate": 0.22157042468683166,
+      "dilemmaRate": null,
+      "expectedTrapRisk": null
+    },
+    "casual": false,
+    "seconds": 23.8
+  },
+  "samples": []
+}

@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "a": "mind",
+    "b": "mind-eq",
+    "games": 1000,
+    "draws": 0,
+    "winRateA": 0.482,
+    "winRateA95": [
+      0.451,
+      0.513
+    ],
+    "senteWinRate": 0.502,
+    "turns": {
+      "median": 26,
+      "p10": 14,
+      "p90": 46
+    },
+    "endings": {
+      "defense-trapped (loser: mind)": 504,
+      "king-left-hanging (loser: mind)": 14,
+      "defense-trapped (loser: mind-eq)": 466,
+      "king-left-hanging (loser: mind-eq)": 16
+    },
+    "leadChangesPerGame": 1.07,
+    "mind": {
+      "wins": 482,
+      "winsAsSente": 242,
+      "gamesAsSente": 500,
+      "trappedRate": 0.1562522215113386,
+      "dilemmaRate": 0.309518731783607,
+      "expectedTrapRisk": 0.194384084584698
+    },
+    "mind-eq": {
+      "wins": 518,
+      "winsAsSente": 260,
+      "gamesAsSente": 500,
+      "trappedRate": 0.1412140575079872,
+      "dilemmaRate": 0.2927937522186723,
+      "expectedTrapRisk": 0.17970686309086337
+    },
+    "casual": true,
+    "seconds": 29.5
+  },
+  "samples": []
+}

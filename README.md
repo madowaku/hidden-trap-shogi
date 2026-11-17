@@ -65,6 +65,20 @@ Botは「罠っぽいマス」を推測できるが、「実際の未公開罠�
 
 Bot難易度は主に罠警戒・欲張り・過去罠学習を変えるもので、深い将棋探索ではありません。
 
+Hard だけは「読み合いエンジン」（`src/game/mindgame.ts`）を使います。
+
+- 罠と指し手を 1 ターン分まとめて計画する。読みは自分の手と相手の応手まで（深い将棋探索ではない）。
+- 「罠を置く側」と「指す側」の同時手番ゲームとして均衡を解き、確率的に選ぶ。おいしい手ほど罠を疑って控え、罠はおいしい着地点ほど高い確率で置く。たまに欲張り、たまに外す。
+- 同じマスに連続で罠を置けないルールから、「直前に公開された相手の罠マスは今回は安全」と推理する。
+- 公開された罠と指し手の履歴から、相手の癖（一番おいしい手に罠を置きがち／欲張りがち）を読んで少しだけ寄せる。
+- エンジンの入力は `getPlayerView` を通した公開情報だけ。相手ログの `pitfallSet`（相手が置いた罠）も読まない。
+
+自動対戦と計測結果は `docs/research/mindgame-bot.md` を参照。
+
+```bash
+node scripts/research/selfplay.mjs --a hard --b normal --games 200 --jobs 8
+```
+
 ## Bot hidden information policy
 
 Bot does not read the player's currently hidden trap position.
@@ -81,6 +95,8 @@ Bot decisions are based on:
 Bot may suspect likely trap squares, but it must not directly inspect unrevealed opponent trap state.
 
 Bot difficulty affects trap suspicion and tactical greed, not deep shogi search.
+
+Hard uses the mind game engine (`src/game/mindgame.ts`): it plans the trap and the move together, solves each turn as a simultaneous trap-vs-move game, and plays the mixed equilibrium (tempting moves are trapped more often and played less often). It still reads only two plies and only public information from `getPlayerView`.
 
 ## Verification
 

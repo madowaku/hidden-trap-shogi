@@ -52,13 +52,14 @@ test('bot levels are typed and wired from page to bot decisions', () => {
   assert.match(page, /Hard/);
 });
 
-test('Hard bot move selection is wired through shallow SearchEngine GameView boundary', () => {
+test('Hard bot is wired through the GameView boundary into the mind game engine', () => {
   const hook = readFileSync(new URL('../../src/hooks/useGame.ts', import.meta.url), 'utf8');
+  const bot = readFileSync(new URL('../../src/game/bot.ts', import.meta.url), 'utf8');
 
-  assert.match(hook, /createShallowSearchEngine/);
-  assert.match(hook, /getPlayerView\(state,\s*botPlayer\)/);
-  assert.match(hook, /decideMoveWithSearchEngine/);
-  assert.match(hook, /state\.config\.botLevel === 'hard'/);
+  assert.match(hook, /simpleBot\.decideMove\(state, botPlayer, state\.config\.botLevel\)/);
+  assert.match(bot, /getPlayerView\(state,\s*player\)/);
+  assert.match(bot, /planMindGameTurn/);
+  assert.match(bot, /level === 'hard'/);
 });
 
 test('bot difficulty copy frames suspicion and greed instead of deep search', () => {

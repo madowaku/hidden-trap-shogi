@@ -1,0 +1,4185 @@
+{
+  "summary": {
+    "a": "mind",
+    "b": "mind",
+    "games": 1000,
+    "draws": 0,
+    "winRateA": 0.5,
+    "winRateA95": [
+      0.469,
+      0.531
+    ],
+    "senteWinRate": 0.501,
+    "turns": {
+      "median": 25,
+      "p10": 14,
+      "p90": 44
+    },
+    "endings": {
+      "defense-trapped (loser: mind)": 963,
+      "king-left-hanging (loser: mind)": 37
+    },
+    "leadChangesPerGame": 1.05,
+    "mind": {
+      "wins": 1000,
+      "winsAsSente": 501,
+      "gamesAsSente": 1000,
+      "trappedRate": 0.15714441575444593,
+      "dilemmaRate": 0.30501509255555154,
+      "expectedTrapRisk": 0.19456457469244642
+    },
+    "casual": true,
+    "seconds": 34.1
+  },
+  "samples": [
+    {
+      "seed": 20261117,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          "-pawn",
+          null,
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.29568382948282856,
+      "failValue": -0.43617705153616326,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.195,
+          "play": 0.442,
+          "trap": 0.418
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 5
+          },
+          "value": -0.211,
+          "play": 0.223,
+          "trap": 0.377
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.259,
+          "play": 0.335,
+          "trap": 0.205
+        }
+      ]
+    },
+    {
+      "seed": 20261117,
+      "turn": 9,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.4835796776057745,
+      "failValue": -0.5710528808693993,
+      "trappedInGame": true,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 7,
+            "col": 1
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.683,
+          "play": 0.123,
+          "trap": 0.93
+        },
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 7,
+            "col": 1
+          },
+          "to": {
+            "row": 6,
+            "col": 0
+          },
+          "value": -0.477,
+          "play": 0.877,
+          "trap": 0.07
+        }
+      ]
+    },
+    {
+      "seed": 20261117,
+      "turn": 10,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.22507075299016951,
+      "failValue": -0.7019382181420426,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 1
+          },
+          "value": 0.842,
+          "play": 0.213,
+          "trap": 0.4
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": 0.841,
+          "play": 0.116,
+          "trap": 0.399
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 2
+          },
+          "value": 0.37,
+          "play": 0.201,
+          "trap": 0.135
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 3,
+            "col": 5
+          },
+          "value": 0.258,
+          "play": 0.235,
+          "trap": 0.034
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 2,
+            "col": 6
+          },
+          "value": 0.255,
+          "play": 0.235,
+          "trap": 0.032
+        }
+      ]
+    },
+    {
+      "seed": 20261118,
+      "turn": 4,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          "+pawn",
+          "+bishop",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+silver",
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.2538185283093354,
+      "failValue": -0.3457521193232076,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 0,
+            "col": 5
+          },
+          "to": {
+            "row": 1,
+            "col": 5
+          },
+          "value": -0.123,
+          "play": 0.562,
+          "trap": 0.588
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 0,
+            "col": 4
+          },
+          "to": {
+            "row": 1,
+            "col": 4
+          },
+          "value": -0.189,
+          "play": 0.438,
+          "trap": 0.412
+        }
+      ]
+    },
+    {
+      "seed": 20261118,
+      "turn": 6,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          null,
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          "-king",
+          null,
+          null,
+          "-bishop",
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "+promoted_bishop",
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+silver",
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.426348433600475,
+      "failValue": -0.5482282454543065,
+      "trappedInGame": true,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 1,
+            "col": 7
+          },
+          "to": {
+            "row": 2,
+            "col": 6
+          },
+          "value": 0.694,
+          "play": 0.155,
+          "trap": 0.902
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 1,
+            "col": 4
+          },
+          "to": {
+            "row": 1,
+            "col": 3
+          },
+          "value": -0.413,
+          "play": 0.845,
+          "trap": 0.098
+        }
+      ]
+    },
+    {
+      "seed": 20261118,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          null,
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          "-king",
+          null,
+          null,
+          "-bishop",
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "+promoted_bishop",
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+silver",
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": 0.3584905314979734,
+      "failValue": -0.7002433162383397,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 2,
+            "col": 6
+          },
+          "to": {
+            "row": 0,
+            "col": 4
+          },
+          "value": 0.998,
+          "play": 0.285,
+          "trap": 0.377
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 2,
+            "col": 6
+          },
+          "to": {
+            "row": 1,
+            "col": 7
+          },
+          "value": 0.843,
+          "play": 0.193,
+          "trap": 0.314
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 2,
+            "col": 6
+          },
+          "to": {
+            "row": 2,
+            "col": 5
+          },
+          "value": 0.561,
+          "play": 0.258,
+          "trap": 0.161
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 2,
+            "col": 6
+          },
+          "to": {
+            "row": 1,
+            "col": 5
+          },
+          "value": 0.543,
+          "play": 0.263,
+          "trap": 0.148
+        }
+      ]
+    },
+    {
+      "seed": 20261119,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          null,
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          "-silver",
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.2923022390209973,
+      "failValue": -0.43343707212332755,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.191,
+          "play": 0.551,
+          "trap": 0.418
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 5
+          },
+          "value": -0.207,
+          "play": 0.168,
+          "trap": 0.377
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.256,
+          "play": 0.281,
+          "trap": 0.205
+        }
+      ]
+    },
+    {
+      "seed": 20261119,
+      "turn": 9,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          null,
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          "-silver",
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.5013600132731446,
+      "failValue": -0.568720655100926,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 7,
+            "col": 1
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.698,
+          "play": 0.124,
+          "trap": 0.947
+        },
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 7,
+            "col": 1
+          },
+          "to": {
+            "row": 8,
+            "col": 2
+          },
+          "value": -0.498,
+          "play": 0.876,
+          "trap": 0.053
+        }
+      ]
+    },
+    {
+      "seed": 20261120,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          "-pawn",
+          null,
+          null,
+          null,
+          "-bishop",
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.29326902614073813,
+      "failValue": -0.43422045979784724,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.192,
+          "play": 0.355,
+          "trap": 0.418
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 5
+          },
+          "value": -0.208,
+          "play": 0.272,
+          "trap": 0.377
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.257,
+          "play": 0.373,
+          "trap": 0.205
+        }
+      ]
+    },
+    {
+      "seed": 20261120,
+      "turn": 10,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+bishop",
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.2399015919637607,
+      "failValue": -0.6901977616420975,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": 0.847,
+          "play": 0.153,
+          "trap": 0.395
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 8,
+            "col": 0
+          },
+          "value": 0.56,
+          "play": 0.106,
+          "trap": 0.256
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 2
+          },
+          "value": 0.492,
+          "play": 0.115,
+          "trap": 0.213
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 3,
+            "col": 5
+          },
+          "value": 0.285,
+          "play": 0.154,
+          "trap": 0.046
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 2,
+            "col": 6
+          },
+          "value": 0.274,
+          "play": 0.156,
+          "trap": 0.036
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 1,
+            "col": 7
+          },
+          "value": 0.27,
+          "play": 0.157,
+          "trap": 0.031
+        }
+      ]
+    },
+    {
+      "seed": 20261120,
+      "turn": 13,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          "-pawn",
+          null,
+          null,
+          null,
+          "-promoted_bishop",
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+bishop",
+          "+pawn",
+          "+knight",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          null,
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          null,
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.45682141398064224,
+      "failValue": -0.4832193963064361,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 6,
+            "col": 0
+          },
+          "to": {
+            "row": 2,
+            "col": 4
+          },
+          "value": -0.24,
+          "play": 0.518,
+          "trap": 0.891
+        },
+        {
+          "type": "move",
+          "piece": "lance",
+          "from": {
+            "row": 8,
+            "col": 0
+          },
+          "to": {
+            "row": 7,
+            "col": 0
+          },
+          "value": -0.457,
+          "play": 0.482,
+          "trap": 0
+        }
+      ]
+    },
+    {
+      "seed": 20261120,
+      "turn": 15,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+bishop",
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          "+lance",
+          null,
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 1,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.41743815121456634,
+      "failValue": -0.6564125907563123,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 7,
+            "col": 3
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.411,
+          "play": 0.189,
+          "trap": 0.776
+        },
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 6,
+            "col": 0
+          },
+          "to": {
+            "row": 2,
+            "col": 4
+          },
+          "value": -0.417,
+          "play": 0.811,
+          "trap": 0
+        }
+      ]
+    },
+    {
+      "seed": 20261120,
+      "turn": 16,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn",
+          "+promoted_bishop",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          "+lance",
+          null,
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 1,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.03618930379835924,
+      "failValue": -0.7005263501566954,
+      "trappedInGame": true,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": 0.841,
+          "play": 0.623,
+          "trap": 0.569
+        },
+        {
+          "type": "drop",
+          "piece": "pawn",
+          "from": null,
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": 0.467,
+          "play": 0.377,
+          "trap": 0.431
+        }
+      ]
+    },
+    {
+      "seed": 20261121,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.320079175560821,
+      "failValue": -0.43422045979784724,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.192,
+          "play": 0.399,
+          "trap": 0.529
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.257,
+          "play": 0.217,
+          "trap": 0.356
+        },
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 8,
+            "col": 2
+          },
+          "value": -0.305,
+          "play": 0.384,
+          "trap": 0.115
+        }
+      ]
+    },
+    {
+      "seed": 20261121,
+      "turn": 9,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+gold",
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.5503634892288389,
+      "failValue": -0.999,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 7,
+            "col": 1
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.697,
+          "play": 0.212,
+          "trap": 0.736
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 5
+          },
+          "value": -0.427,
+          "play": 0.335,
+          "trap": 0.215
+        },
+        {
+          "type": "move",
+          "piece": "rook",
+          "from": {
+            "row": 7,
+            "col": 7
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.527,
+          "play": 0.453,
+          "trap": 0.049
+        }
+      ]
+    },
+    {
+      "seed": 20261121,
+      "turn": 10,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "-promoted_bishop",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "+rook",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+gold",
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.523220779491626,
+      "failValue": 0.18399167266720787,
+      "trappedInGame": true,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": 0.892,
+          "play": 0.598,
+          "trap": 0.521
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 1
+          },
+          "value": 0.835,
+          "play": 0.402,
+          "trap": 0.479
+        }
+      ]
+    },
+    {
+      "seed": 20261121,
+      "turn": 22,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+king",
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "-promoted_bishop",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          "+gold",
+          null,
+          null,
+          null,
+          "+gold",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 1,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 1,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.5448366095649597,
+      "failValue": 0.03318415614598924,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "drop",
+          "piece": "silver",
+          "from": null,
+          "to": {
+            "row": 4,
+            "col": 6
+          },
+          "value": 0.773,
+          "play": 0.191,
+          "trap": 0.308
+        },
+        {
+          "type": "drop",
+          "piece": "silver",
+          "from": null,
+          "to": {
+            "row": 4,
+            "col": 5
+          },
+          "value": 0.713,
+          "play": 0.265,
+          "trap": 0.247
+        },
+        {
+          "type": "drop",
+          "piece": "silver",
+          "from": null,
+          "to": {
+            "row": 6,
+            "col": 7
+          },
+          "value": 0.692,
+          "play": 0.272,
+          "trap": 0.223
+        },
+        {
+          "type": "drop",
+          "piece": "silver",
+          "from": null,
+          "to": {
+            "row": 4,
+            "col": 7
+          },
+          "value": 0.691,
+          "play": 0.272,
+          "trap": 0.222
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 5,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.2782205754718771,
+      "failValue": -0.43422045979784724,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "pawn",
+          "from": {
+            "row": 6,
+            "col": 3
+          },
+          "to": {
+            "row": 5,
+            "col": 3
+          },
+          "value": -0.107,
+          "play": 0.289,
+          "trap": 0.524
+        },
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.192,
+          "play": 0.286,
+          "trap": 0.356
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.257,
+          "play": 0.425,
+          "trap": 0.12
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 6,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "+pawn",
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": 0.07794108619553505,
+      "failValue": 0.005694413490319913,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 4,
+            "col": 4
+          },
+          "to": {
+            "row": 6,
+            "col": 6
+          },
+          "value": 0.231,
+          "play": 0.418,
+          "trap": 0.68
+        },
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 4,
+            "col": 4
+          },
+          "to": {
+            "row": 5,
+            "col": 3
+          },
+          "value": 0.112,
+          "play": 0.582,
+          "trap": 0.32
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 8,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          "+gold",
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.25903911738378943,
+      "failValue": 0.13039169772047823,
+      "trappedInGame": true,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 5,
+            "col": 3
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.444,
+          "play": 0.46,
+          "trap": 0.589
+        },
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 5,
+            "col": 3
+          },
+          "to": {
+            "row": 6,
+            "col": 4
+          },
+          "value": 0.349,
+          "play": 0.54,
+          "trap": 0.411
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 10,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          "+gold",
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": 0.13038256540247967,
+      "failValue": 0.12766017214450298,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "bishop",
+          "from": {
+            "row": 5,
+            "col": 3
+          },
+          "to": {
+            "row": 6,
+            "col": 2
+          },
+          "value": 0.535,
+          "play": 0.005,
+          "trap": 0.993
+        },
+        {
+          "type": "move",
+          "piece": "pawn",
+          "from": {
+            "row": 2,
+            "col": 0
+          },
+          "to": {
+            "row": 3,
+            "col": 0
+          },
+          "value": 0.13,
+          "play": 0.498,
+          "trap": 0.003
+        },
+        {
+          "type": "move",
+          "piece": "pawn",
+          "from": {
+            "row": 2,
+            "col": 8
+          },
+          "to": {
+            "row": 3,
+            "col": 8
+          },
+          "value": 0.13,
+          "play": 0.498,
+          "trap": 0.003
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 11,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          "-bishop",
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          "+gold",
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          null,
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 1
+        }
+      },
+      "gameValue": -0.43980382323266093,
+      "failValue": -0.5364327233905001,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 7,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.308,
+          "play": 0.821,
+          "trap": 0.577
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 8,
+            "col": 3
+          },
+          "value": -0.369,
+          "play": 0.179,
+          "trap": 0.423
+        }
+      ]
+    },
+    {
+      "seed": 20261122,
+      "turn": 14,
+      "player": "gote",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "-pawn",
+          null,
+          "-pawn"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          "+pawn"
+        ],
+        [
+          "+pawn",
+          "+pawn",
+          "-promoted_bishop",
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          "+gold",
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+king",
+          null,
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 2
+        }
+      },
+      "gameValue": 0.38785860366548014,
+      "failValue": -0.6351489523872873,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": 0.998,
+          "play": 0.447,
+          "trap": 0.374
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 1
+          },
+          "value": 0.884,
+          "play": 0.268,
+          "trap": 0.326
+        },
+        {
+          "type": "move",
+          "piece": "promoted_bishop",
+          "from": {
+            "row": 6,
+            "col": 2
+          },
+          "to": {
+            "row": 7,
+            "col": 2
+          },
+          "value": 0.826,
+          "play": 0.285,
+          "trap": 0.3
+        }
+      ]
+    },
+    {
+      "seed": 20261123,
+      "turn": 7,
+      "player": "sente",
+      "board": [
+        [
+          "-lance",
+          "-knight",
+          "-silver",
+          "-gold",
+          "-king",
+          "-gold",
+          "-silver",
+          "-knight",
+          "-lance"
+        ],
+        [
+          null,
+          "-rook",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          "-pawn",
+          null,
+          "-pawn",
+          "-pawn"
+        ],
+        [
+          "-pawn",
+          null,
+          null,
+          null,
+          null,
+          "-bishop",
+          "-pawn",
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "+pawn",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "+pawn",
+          null
+        ],
+        [
+          null,
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          "+pawn",
+          null,
+          "+pawn"
+        ],
+        [
+          null,
+          "+bishop",
+          "+silver",
+          null,
+          null,
+          null,
+          null,
+          "+rook",
+          null
+        ],
+        [
+          "+lance",
+          "+knight",
+          null,
+          "+gold",
+          "+king",
+          "+gold",
+          "+silver",
+          "+knight",
+          "+lance"
+        ]
+      ],
+      "hands": {
+        "sente": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        },
+        "gote": {
+          "rook": 0,
+          "bishop": 0,
+          "gold": 0,
+          "silver": 0,
+          "knight": 0,
+          "lance": 0,
+          "pawn": 0
+        }
+      },
+      "gameValue": -0.29326902614073813,
+      "failValue": -0.43422045979784724,
+      "trappedInGame": false,
+      "candidates": [
+        {
+          "type": "move",
+          "piece": "gold",
+          "from": {
+            "row": 8,
+            "col": 3
+          },
+          "to": {
+            "row": 7,
+            "col": 3
+          },
+          "value": -0.192,
+          "play": 0.162,
+          "trap": 0.418
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 5
+          },
+          "value": -0.208,
+          "play": 0.407,
+          "trap": 0.377
+        },
+        {
+          "type": "move",
+          "piece": "king",
+          "from": {
+            "row": 8,
+            "col": 4
+          },
+          "to": {
+            "row": 7,
+            "col": 4
+          },
+          "value": -0.257,
+          "play": 0.431,
+          "trap": 0.205
+        }
+      ]
+    }
+  ]
+}

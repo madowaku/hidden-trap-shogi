@@ -1,0 +1,45 @@
+{
+  "summary": {
+    "a": "normal",
+    "b": "easy",
+    "games": 1000,
+    "draws": 0,
+    "winRateA": 0.994,
+    "winRateA95": [
+      0.989,
+      0.999
+    ],
+    "senteWinRate": 0.496,
+    "turns": {
+      "median": 29,
+      "p10": 10,
+      "p90": 71
+    },
+    "endings": {
+      "king-left-hanging (loser: easy)": 947,
+      "king-left-hanging (loser: normal)": 1,
+      "defense-trapped (loser: easy)": 47,
+      "defense-trapped (loser: normal)": 5
+    },
+    "leadChangesPerGame": 0,
+    "normal": {
+      "wins": 994,
+      "winsAsSente": 495,
+      "gamesAsSente": 500,
+      "trappedRate": 0.046868868083197845,
+      "dilemmaRate": null,
+      "expectedTrapRisk": null
+    },
+    "easy": {
+      "wins": 6,
+      "winsAsSente": 1,
+      "gamesAsSente": 500,
+      "trappedRate": 0.03609525456956697,
+      "dilemmaRate": null,
+      "expectedTrapRisk": null
+    },
+    "casual": true,
+    "seconds": 5
+  },
+  "samples": []
+}
